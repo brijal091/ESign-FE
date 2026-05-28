@@ -4,6 +4,7 @@ export * from './auth'
 export * from './template'
 export * from './admin'
 export * from './contact'
+export * from './sse'
 
 // ─── Field ────────────────────────────────────────────────────────────────────
 

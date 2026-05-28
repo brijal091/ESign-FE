@@ -1,14 +1,30 @@
 'use client'
 
+import { useCallback } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { Upload, Search } from 'lucide-react'
 import { Button, Input } from '@esign/ui'
+import type { DocumentStatusEvent } from '@esign/types'
 import { DocumentsTable } from '../../../components/documents/documents-table'
 import { UploadDialog } from '../../../components/documents/upload-dialog'
+import { ConnectionIndicator } from '../../../components/system/connection-indicator'
 import { useDocuments } from '../../../lib/hooks/use-documents'
+import { useDocumentStream } from '../../../lib/hooks/use-document-stream'
 
 export default function DocumentsPage() {
   const { data, isLoading } = useDocuments()
   const documents = data ?? []
+  const qc = useQueryClient()
+
+  const handleEvent = useCallback(
+    (event: DocumentStatusEvent) => {
+      qc.invalidateQueries({ queryKey: ['documents'] })
+      qc.invalidateQueries({ queryKey: ['documents', event.documentId] })
+    },
+    [qc],
+  )
+
+  const { state: streamState } = useDocumentStream({ onEvent: handleEvent })
 
   return (
     <div className="mx-auto flex w-full max-w-[1280px] flex-1 flex-col px-6 py-8">
@@ -20,14 +36,17 @@ export default function DocumentsPage() {
             Send, sign, and track every document in one place.
           </p>
         </div>
-        <UploadDialog
-          trigger={
-            <Button className="gap-2">
-              <Upload className="size-4" />
-              Upload a PDF &amp; Sign
-            </Button>
-          }
-        />
+        <div className="flex items-center gap-3">
+          <ConnectionIndicator state={streamState} />
+          <UploadDialog
+            trigger={
+              <Button className="gap-2">
+                <Upload className="size-4" />
+                Upload a PDF &amp; Sign
+              </Button>
+            }
+          />
+        </div>
       </div>
 
       {/* Toolbar */}

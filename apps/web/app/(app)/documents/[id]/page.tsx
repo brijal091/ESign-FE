@@ -1,8 +1,9 @@
 'use client'
 
-import { Suspense, use } from 'react'
+import { Suspense, use, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   ChevronLeft,
   FileText,
@@ -30,8 +31,10 @@ import {
 } from '@esign/ui'
 import { StatusBadge } from '../../../../components/documents/status-badge'
 import { ActivityItem } from '../../../../components/audit/activity-item'
+import { ConnectionIndicator } from '../../../../components/system/connection-indicator'
 import { fieldTypeMeta } from '../../../../lib/field-types'
 import { useDocument } from '../../../../lib/hooks/use-documents'
+import { useDocumentStream } from '../../../../lib/hooks/use-document-stream'
 import { useDocumentTimeline } from '../../../../lib/hooks/use-audit'
 import type { Document, DocumentField, Signer } from '@esign/types'
 
@@ -80,6 +83,13 @@ function DocumentDetail({ id }: { id: string }) {
   const defaultTab: TabKey = isTabKey(tabParam) ? tabParam : 'overview'
 
   const { data: doc, isLoading, isError } = useDocument(id)
+  const qc = useQueryClient()
+  const onStreamEvent = useCallback(() => {
+    qc.invalidateQueries({ queryKey: ['documents', id] })
+    qc.invalidateQueries({ queryKey: ['documents'] })
+    qc.invalidateQueries({ queryKey: ['audit', 'document', id] })
+  }, [qc, id])
+  const { state: streamState } = useDocumentStream({ documentId: id, onEvent: onStreamEvent })
 
   if (isLoading) return <DetailSkeleton />
 
@@ -134,13 +144,16 @@ function DocumentDetail({ id }: { id: string }) {
             </div>
           </div>
         </div>
-        <Link
-          href={`/documents/${doc.id}/edit`}
-          className={buttonVariants({ variant: 'secondary', size: 'sm' })}
-        >
-          <Pencil className="size-3.5" />
-          Edit
-        </Link>
+        <div className="flex items-center gap-3">
+          <ConnectionIndicator state={streamState} />
+          <Link
+            href={`/documents/${doc.id}/edit`}
+            className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+          >
+            <Pencil className="size-3.5" />
+            Edit
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}
