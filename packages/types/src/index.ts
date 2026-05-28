@@ -5,6 +5,7 @@ export * from './template'
 export * from './admin'
 export * from './contact'
 export * from './sse'
+export * from './dashboard'
 
 // ─── Field ────────────────────────────────────────────────────────────────────
 
