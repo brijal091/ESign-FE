@@ -3,6 +3,7 @@ import { z } from 'zod'
 export * from './auth'
 export * from './template'
 export * from './admin'
+export * from './contact'
 
 // ─── Field ────────────────────────────────────────────────────────────────────
 
@@ -91,28 +92,6 @@ export const DocumentSchema = z.object({
   expiresAt: z.string().datetime().nullable().optional(),
 })
 export type Document = z.infer<typeof DocumentSchema>
-
-// ─── Contact ──────────────────────────────────────────────────────────────────
-
-export const ContactSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  company: z.string().optional(),
-  notes: z.string().optional(),
-  groupIds: z.array(z.string().uuid()).default([]),
-  ownerId: z.string().uuid(),
-  createdAt: z.string().datetime(),
-})
-export type Contact = z.infer<typeof ContactSchema>
-
-export const ContactGroupSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1),
-  ownerId: z.string().uuid(),
-})
-export type ContactGroup = z.infer<typeof ContactGroupSchema>
 
 // ─── Audit ────────────────────────────────────────────────────────────────────
 
