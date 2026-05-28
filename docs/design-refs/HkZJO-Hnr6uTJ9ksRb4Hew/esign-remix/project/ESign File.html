@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · File</title>
+<link rel="stylesheet" href="assets/paraph.css">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ------- File chrome ------- */
+  .app { display: grid; grid-template-rows: 48px 1fr; height: 100vh; }
+  .topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .topbar .logo {
+    width: 24px; height: 24px;
+    background: var(--brand);
+    color: var(--ink-inverse);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-style: italic; font-weight: 600;
+    font-size: 15px;
+    line-height: 1;
+  }
+  .topbar .crumbs { display: flex; align-items: center; gap: 8px; color: var(--ink-muted); }
+  .topbar .crumbs .sep { color: var(--ink-faint); }
+  .topbar .crumbs .file { color: var(--ink); font-weight: 500; }
+  .topbar .spacer { flex: 1; }
+  .topbar .saved {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--ink-subtle); font-size: 12px;
+  }
+  .topbar .saved .dot {
+    width: 6px; height: 6px; border-radius: 999px; background: var(--success);
+  }
+  .topbar .avatar {
+    width: 26px; height: 26px; border-radius: 999px;
+    background: oklch(0.78 0.06 38); color: var(--ink-inverse);
+    display: grid; place-items: center;
+    font-weight: 600; font-size: 11px;
+  }
+
+  /* ------- Layout ------- */
+  .body { display: grid; grid-template-columns: 280px 1fr; min-height: 0; }
+
+  /* ------- Sidebar (Pages panel) ------- */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .sidebar .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px 8px;
+    font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--ink-subtle);
+    font-weight: 600;
+  }
+  .sidebar .section-head .count {
+    background: var(--surface-sunken);
+    color: var(--ink-muted);
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .pages { padding: 0 8px 16px; overflow-y: auto; flex: 1; }
+  .page-row {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%;
+    padding: 7px 10px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--dur-1) var(--ease-out);
+  }
+  .page-row:hover { background: var(--surface-hover); }
+  .page-row.active { background: var(--brand-soft); color: var(--brand-strong); }
+  .page-row .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    min-width: 18px;
+  }
+  .page-row.active .num { color: var(--brand-strong); }
+  .page-row .name { flex: 1; font-size: 13px; }
+  .page-row .badge-mini {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--surface-sunken);
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .page-row.active .badge-mini { background: var(--surface-raised); color: var(--brand-strong); }
+  .page-row .badge-mini.ready { background: var(--success-soft); color: var(--success-strong); }
+  .page-row .badge-mini.done  { background: var(--brand-soft);   color: var(--brand-strong); }
+  .page-row .badge-mini.empty { background: var(--surface-sunken); color: var(--ink-subtle); }
+
+  .pages .divider {
+    height: 1px; background: var(--border-subtle); margin: 8px 6px;
+  }
+
+  .ds-note {
+    margin: 0 12px 12px;
+    padding: 10px 12px;
+    background: var(--info-soft);
+    border: 1px solid oklch(0.88 0.04 245);
+    border-radius: var(--radius-md);
+    color: var(--info-strong);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .ds-note strong { font-weight: 600; }
+
+  /* ------- Canvas area ------- */
+  .canvas {
+    background:
+      radial-gradient(circle at 20% 10%, oklch(0.95 0.05 40 / 0.5), transparent 40%),
+      radial-gradient(circle at 80% 70%, oklch(0.95 0.05 75 / 0.4), transparent 45%),
+      var(--paper);
+    overflow: auto;
+    min-height: 0;
+    padding: 32px 40px 64px;
+  }
+
+  .page {
+    display: none;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .page.active { display: block; }
+
+  .page-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 32px;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .page-header h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .page-header h1 .num {
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--ink-faint);
+    letter-spacing: 0;
+    display: inline-block;
+    margin-right: 14px;
+    vertical-align: 6px;
+  }
+  .page-header .subtitle {
+    margin-top: 6px;
+    color: var(--ink-muted);
+    font-size: 15px;
+    max-width: 560px;
+  }
+  .page-header .meta {
+    text-align: right;
+    color: var(--ink-subtle);
+    font-size: 12px;
+    line-height: 1.6;
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+  .page-header .meta .label { color: var(--ink-faint); }
+
+  /* ------- Manifest cards ------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+  }
+  .card h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card h3 .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+  .card .desc {
+    color: var(--ink-muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  .card .uses-label {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-size: 12px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--surface-sunken);
+    border: 1px solid var(--border);
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  .chip.primary {
+    background: var(--brand-soft);
+    border-color: oklch(0.88 0.06 40);
+    color: var(--brand-strong);
+  }
+
+  /* ------- Empty-page artboard ------- */
+  .artboard-empty {
+    margin-top: 24px;
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(var(--border) 1px, transparent 1px) 0 0 / 16px 16px,
+      var(--surface);
+    background-blend-mode: multiply;
+    min-height: 360px;
+    padding: 48px 32px;
+    display: grid; place-items: center; text-align: center;
+  }
+  .artboard-empty .glyph {
+    width: 56px; height: 56px;
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    display: grid; place-items: center;
+    color: var(--ink-faint);
+    margin: 0 auto 16px;
+    box-shadow: var(--shadow-1);
+  }
+  .artboard-empty h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .artboard-empty p {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 13.5px;
+    max-width: 420px;
+  }
+  .artboard-empty .frames-meta {
+    margin-top: 18px;
+    display: inline-flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .artboard-empty .frame-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    color: var(--ink-muted);
+    font-size: 12px;
+    font-family: var(--font-mono);
+  }
+  .artboard-empty .frame-tag .dim { color: var(--ink-faint); }
+
+  /* ------- Cover page ------- */
+  .cover {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 72px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 85% 10%, oklch(0.85 0.13 40 / 0.30), transparent 35%),
+      radial-gradient(circle at 10% 90%, oklch(0.90 0.10 75 / 0.30), transparent 40%);
+    pointer-events: none;
+  }
+  .cover-inner { position: relative; }
+  .cover .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--brand-strong);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .cover h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 84px;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0 0 18px;
+    color: var(--ink);
+  }
+  .cover h1 em {
+    font-style: italic;
+    color: var(--brand);
+  }
+  .cover .lede {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    max-width: 640px;
+    margin: 0 0 40px;
+  }
+  .cover-meta {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 28px;
+    max-width: 880px;
+  }
+  .cover-meta dt {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .cover-meta dd {
+    margin: 0;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  /* ------- Foundations / Components reference cards ------- */
+  .ref-list { display: grid; gap: 8px; }
+  .ref-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .ref-row .ico {
+    color: var(--ink-faint);
+    display: grid; place-items: center;
+  }
+  .ref-row .name { font-weight: 500; color: var(--ink); font-size: 13.5px; }
+  .ref-row .name small { display: block; color: var(--ink-subtle); font-weight: 400; font-size: 12px; margin-top: 2px; }
+  .ref-row .state {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--ink-subtle);
+  }
+  .ref-row .state.gap { color: var(--warning-strong); }
+
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .col h2 {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  .callout {
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: var(--warning-soft);
+    border: 1px solid oklch(0.85 0.10 80);
+    border-radius: var(--radius-md);
+    color: var(--warning-strong);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .callout h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .callout ul { margin: 6px 0 0; padding-left: 18px; }
+  .callout li { margin: 2px 0; }
+
+  /* Layout list */
+  .layouts { display: grid; gap: 10px; margin-top: 18px; }
+  .layout-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 180px;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .layout-row .lname { font-weight: 500; color: var(--ink); font-size: 13.5px; }
+  .layout-row .ldesc { color: var(--ink-muted); font-size: 13px; }
+  .layout-row .ldim {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-subtle);
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ Top bar ============ -->
+  <header class="topbar">
+    <div class="logo">P</div>
+    <div class="crumbs">
+      <span>Paraph Design</span>
+      <span class="sep">/</span>
+      <span>Projects</span>
+      <span class="sep">/</span>
+      <span class="file">ESign · v0.1</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="saved"><span class="dot"></span> All changes saved</div>
+    <div class="avatar">JK</div>
+  </header>
+
+  <div class="body">
+
+    <!-- ============ Sidebar — Pages ============ -->
+    <aside class="sidebar">
+      <div class="section-head">
+        <span>Pages</span>
+        <span class="count">11</span>
+      </div>
+
+      <nav class="pages" id="page-nav">
+        <button class="page-row active" data-page="p00">
+          <span class="num">00</span><span class="name">Cover</span>
+          <span class="badge-mini">cover</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="page-row" data-page="p01">
+          <span class="num">01</span><span class="name">Foundations</span>
+          <span class="badge-mini ready">DS</span>
+        </button>
+        <button class="page-row" data-page="p02">
+          <span class="num">02</span><span class="name">Components</span>
+          <span class="badge-mini ready">DS</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="page-row" data-page="p03">
+          <span class="num">03</span><span class="name">Auth</span>
+          <span class="badge-mini done">9 frames</span>
+        </button>
+        <button class="page-row" data-page="p04">
+          <span class="num">04</span><span class="name">Documents</span>
+          <span class="badge-mini done">5 frames</span>
+        </button>
+        <button class="page-row" data-page="p05">
+          <span class="num">05</span><span class="name">Editor</span>
+          <span class="badge-mini done">7 frames</span>
+        </button>
+        <button class="page-row" data-page="p06">
+          <span class="num">06</span><span class="name">Signer</span>
+          <span class="badge-mini done">14 frames</span>
+        </button>
+        <button class="page-row" data-page="p07">
+          <span class="num">07</span><span class="name">Dashboard</span>
+          <span class="badge-mini done">3 frames</span>
+        </button>
+        <button class="page-row" data-page="p08">
+          <span class="num">08</span><span class="name">Templates &amp; Contacts</span>
+          <span class="badge-mini done">5 frames</span>
+        </button>
+        <button class="page-row" data-page="p09">
+          <span class="num">09</span><span class="name">Admin</span>
+          <span class="badge-mini done">6 frames</span>
+        </button>
+        <button class="page-row" data-page="p10">
+          <span class="num">10</span><span class="name">System States</span>
+          <span class="badge-mini done">8 frames</span>
+        </button>
+      </nav>
+
+      <div class="ds-note">
+        <strong>Design system bound:</strong> Paraph DS (warm‑paper palette, Geist + Instrument Serif, Lucide icons @ 1.5px). All screens consume tokens from <code style="font-family:var(--font-mono);font-size:11px">assets/paraph.css</code>.
+      </div>
+    </aside>
+
+    <!-- ============ Canvas ============ -->
+    <main class="canvas" id="canvas">
+
+      <!-- ============ 00 — Cover ============ -->
+      <section class="page active" id="p00">
+        <div class="cover">
+          <div class="cover-inner">
+            <div class="eyebrow">Project file · v0.1 · scaffold</div>
+            <h1>ESign<br><em>file structure</em></h1>
+            <p class="lede">
+              An e‑signature SaaS, designed on Paraph DS. This file holds every surface — auth, documents, editor, signer, dashboard, templates, admin, and system states. Pages 03–10 are scaffolded and waiting on follow‑up flow prompts.
+            </p>
+            <dl class="cover-meta">
+              <div><dt>Design system</dt><dd>Paraph · Warm Paper</dd></div>
+              <div><dt>Sender / admin</dt><dd>1440 × 900 · desktop‑first</dd></div>
+              <div><dt>Signer</dt><dd>375 × 812 · mobile‑first<br>1440 fallback, centered</dd></div>
+              <div><dt>Pages</dt><dd>11 total · 8 empty</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 01 — Foundations ============ -->
+      <section class="page" id="p01">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">01</span>Foundations</h1>
+            <p class="subtitle">Color, type, spacing, radii, shadows, motion — already populated from the Paraph DS. Leave as‑is.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span> &nbsp;ready</div>
+            <div><span class="label">source</span>&nbsp; paraph.css</div>
+          </div>
+        </header>
+
+        <div class="columns">
+          <div class="col">
+            <h2>Color tokens</h2>
+            <div class="ref-list">
+              <div class="ref-row"><span class="ico"><i data-lucide="droplet"></i></span><span class="name">Surfaces &amp; ink<small>paper, surface, ink, ink‑muted, ink‑subtle, ink‑faint</small></span><span class="state">12 tokens</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="palette"></i></span><span class="name">Brand<small>brand, brand‑hover, brand‑active, brand‑soft, brand‑strong</small></span><span class="state">5 tokens</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="circle-alert"></i></span><span class="name">Semantic<small>success · warning · danger · info (×3 each)</small></span><span class="state">12 tokens</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="badge-check"></i></span><span class="name">Status<small>draft · sent · viewed · signed · declined · expired</small></span><span class="state">6 tokens</span></div>
+            </div>
+          </div>
+          <div class="col">
+            <h2>Type, spacing, motion</h2>
+            <div class="ref-list">
+              <div class="ref-row"><span class="ico"><i data-lucide="type"></i></span><span class="name">Type families<small>Geist · Instrument Serif · Geist Mono</small></span><span class="state">3 families</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="ruler"></i></span><span class="name">Spacing scale<small>4px base · 0,1,2,3,4,6,8,12,16,20,24…</small></span><span class="state">15 steps</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="square-rounded-corner"></i></span><span class="name">Radii<small>xs 4 · sm 6 · md 10 · lg 14 · xl 20 · full</small></span><span class="state">6 steps</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="layers"></i></span><span class="name">Shadows<small>shadow‑1, shadow‑2, shadow‑3, focus</small></span><span class="state">4 elev.</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="zap"></i></span><span class="name">Motion<small>dur‑1…4 · ease‑out · ease‑in‑out</small></span><span class="state">6 tokens</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 02 — Components ============ -->
+      <section class="page" id="p02">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">02</span>Components</h1>
+            <p class="subtitle">Components shipped with the Paraph DS. Pages 03–10 reference these by name — never redraw.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; ready (10 of 25)</div>
+            <div><span class="label">gaps</span> &nbsp;15 to add</div>
+          </div>
+        </header>
+
+        <div class="columns">
+          <div class="col">
+            <h2>Shipped in Paraph DS</h2>
+            <div class="ref-list">
+              <div class="ref-row"><span class="ico"><i data-lucide="square"></i></span><span class="name">Button<small>primary · secondary · ghost · destructive · sm/md/lg</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="text-cursor-input"></i></span><span class="name">Input<small>default · focus · filled · error · disabled</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="hash"></i></span><span class="name">OTP input<small>6‑digit segmented</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="list-ordered"></i></span><span class="name">Progress Stepper<small>active · complete · upcoming</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="tag"></i></span><span class="name">Badge<small>Draft · Sent · Viewed · Signed · Declined · Expired</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="bell"></i></span><span class="name">Toast<small>success · info · warning · error · loading</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="square-stack"></i></span><span class="name">Dialog (Modal)<small>header · body · footer · destructive variant</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="table"></i></span><span class="name">Table row<small>avatar stack · status badge · date · menu</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="puzzle"></i></span><span class="name">Field chip<small>signature · initials · date · text · checkbox</small></span><span class="state">ready</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="activity"></i></span><span class="name">Audit event<small>icon · actor · action · timestamp</small></span><span class="state">ready</span></div>
+            </div>
+          </div>
+          <div class="col">
+            <h2>To define before flow prompts (gap)</h2>
+            <div class="ref-list">
+              <div class="ref-row"><span class="ico"><i data-lucide="mouse-pointer-click"></i></span><span class="name">Icon Button<small>square button · 28/32/36 · ghost &amp; outline</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="text"></i></span><span class="name">Textarea<small>multi‑line input · resize handle</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="tag"></i></span><span class="name">Label<small>field label · required asterisk · helper text</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="circle"></i></span><span class="name">Status Dot<small>6 status colors · 8px · with optional label</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="square-dashed"></i></span><span class="name">Card<small>generic content card · padding 20/24</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="chevron-down"></i></span><span class="name">Dropdown Menu<small>items · separators · destructive item · submenu</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="rectangle-horizontal"></i></span><span class="name">Tabs<small>underline · pill variants</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="message-square"></i></span><span class="name">Tooltip<small>4 placements · keyboard shortcut row</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="panel-top"></i></span><span class="name">Top Nav<small>64h · logo · primary nav · search · avatar</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="panel-left"></i></span><span class="name">Sidebar Section<small>group label · nav items · collapsible</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="palette"></i></span><span class="name">Signer Color Chip<small>per‑signer color · circular swatch</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="square-pen"></i></span><span class="name">Field‑Type Chip<small>13 field types · iconified</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="hash"></i></span><span class="name">Tag Chip<small>document tag · removable</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="user-circle"></i></span><span class="name">Avatar<small>initials · image · sm/md/lg · stack</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="inbox"></i></span><span class="name">Empty State<small>icon · headline · body · CTA</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="loader"></i></span><span class="name">Skeleton Loader<small>line · block · table row shimmer</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="toggle-left"></i></span><span class="name">Switch<small>off · on · disabled · with label</small></span><span class="state gap">define</span></div>
+              <div class="ref-row"><span class="ico"><i data-lucide="pen-tool"></i></span><span class="name">Signature Pad<small>draw / type / upload tabs · clear · accept</small></span><span class="state gap">define</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <h3><i data-lucide="triangle-alert" style="width:16px;height:16px"></i> Component coverage check</h3>
+          Your prompt assumes 25 named components; Paraph DS currently ships 10. Before flow prompts begin populating pages 03–10, the 15 components marked <em>“define”</em> need to be added to page <strong>02 Components</strong>. Either:
+          <ul>
+            <li>extend the Paraph DS with the missing primitives (preferred — keeps a single source of truth), or</li>
+            <li>let me draft them inline on page 02 as I encounter them in the flows, then back‑port to the DS.</li>
+          </ul>
+        </div>
+
+        <div style="margin-top:28px">
+          <div class="col">
+            <h2>Layout primitives</h2>
+            <div class="layouts">
+              <div class="layout-row"><span class="lname">App Shell</span><span class="ldesc">Top Nav (64h) + content area · used by Documents, Dashboard, Templates, Admin</span><span class="ldim">1440 × 900</span></div>
+              <div class="layout-row"><span class="lname">Auth Split</span><span class="ldesc">50/50 · brand panel left · form right (400w form, vertically centered)</span><span class="ldim">1440 × 900</span></div>
+              <div class="layout-row"><span class="lname">Editor Layout</span><span class="ldesc">Top action bar 56h + left sidebar 320w + center PDF canvas</span><span class="ldim">1440 × 900</span></div>
+              <div class="layout-row"><span class="lname">Mobile Signer</span><span class="ldesc">56h sticky top + scroll content + 64h sticky bottom action bar</span><span class="ldim">375 × 812 · 1440 fallback</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Empty pages 03–10 ============ -->
+      <!-- 03 Auth -->
+      <section class="page" id="p03">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">03</span>Auth</h1>
+            <p class="subtitle">Sender account creation, login, password recovery. Mounted in <strong>Auth Split</strong> layout.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; empty · ready</div>
+            <div><span class="label">layout</span>&nbsp; auth‑split 1440×900</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">03.01</span> Log in</h3>
+            <p class="desc">Email + password. Magic‑link option. Errors on invalid credentials. SSO buttons reserved (Google / Microsoft).</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Input</span><span class="chip primary">Button</span><span class="chip primary">Label</span><span class="chip primary">Toast</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">03.02</span> Sign up — email</h3>
+            <p class="desc">Step 1 of 3. Capture email, present T&amp;C. Stepper visible.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Progress Stepper</span><span class="chip primary">Input</span><span class="chip primary">Button</span><span class="chip primary">Label</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">03.03</span> Sign up — OTP</h3>
+            <p class="desc">Step 2. 6‑digit code from email. Resend timer. Error on mismatch.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">OTP Input</span><span class="chip primary">Progress Stepper</span><span class="chip primary">Button</span><span class="chip primary">Toast</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">03.04</span> Sign up — org details</h3>
+            <p class="desc">Step 3. Company name, role, team size. Submit → Documents (empty state).</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Input</span><span class="chip primary">Dropdown Menu</span><span class="chip primary">Progress Stepper</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">03.05</span> Forgot password</h3>
+            <p class="desc">Single‑field reset request. Toast on send.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Input</span><span class="chip primary">Button</span><span class="chip primary">Toast</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">03.06</span> Reset password</h3>
+            <p class="desc">Token‑gated. Two password fields, validation rules visible.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Input</span><span class="chip primary">Label</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/03%20Auth.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1);transition:box-shadow var(--dur-2) var(--ease-out)" onmouseover="this.style.boxShadow='var(--shadow-2)'" onmouseout="this.style.boxShadow='var(--shadow-1)'">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="layout-template" style="width:14px;height:14px"></i> 9 frames · 4 annotations</span>
+            </div>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+              <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(135deg,oklch(0.94 0.05 70) 0%,oklch(0.96 0.03 75) 50%,var(--surface) 50%,var(--surface) 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">03.01 Login</div>
+              <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(135deg,oklch(0.94 0.05 70) 0%,oklch(0.96 0.03 75) 50%,var(--surface) 50%,var(--surface) 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">03.02 Sign up</div>
+              <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(135deg,oklch(0.94 0.05 70) 0%,oklch(0.96 0.03 75) 50%,var(--surface) 50%,var(--surface) 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">03.03 OTP</div>
+              <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(135deg,oklch(0.94 0.05 70) 0%,oklch(0.96 0.03 75) 50%,var(--surface) 50%,var(--surface) 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">03.04 Org</div>
+              <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(135deg,oklch(0.94 0.05 70) 0%,oklch(0.96 0.03 75) 50%,var(--surface) 50%,var(--surface) 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">03.05–07 Forgot</div>
+              <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(135deg,oklch(0.94 0.05 70) 0%,oklch(0.96 0.03 75) 50%,var(--surface) 50%,var(--surface) 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">03.08–09 Invite + sent</div>
+            </div>
+          </div>
+        </a>
+      </section>
+
+      <!-- 04 Documents -->
+      <section class="page" id="p04">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">04</span>Documents</h1>
+            <p class="subtitle">The sender's primary surface. Lists every Document with status, signers, dates. Filters, bulk actions, row menus.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; empty · ready</div>
+            <div><span class="label">layout</span>&nbsp; app‑shell 1440×900</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">04.01</span> All documents — populated</h3>
+            <p class="desc">Default view. Mixed status. Filter bar, search, "Send for Signature" CTA.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Top Nav</span><span class="chip primary">Table</span><span class="chip primary">Badge</span><span class="chip primary">Avatar</span><span class="chip primary">Tag Chip</span><span class="chip primary">Dropdown Menu</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">04.02</span> Filtered: "To Sign"</h3>
+            <p class="desc">Sent documents awaiting signers. Sorted by sent date desc.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Table</span><span class="chip primary">Badge</span><span class="chip primary">Tabs</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">04.03</span> Empty state</h3>
+            <p class="desc">No documents yet. "Upload a PDF" primary action.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Empty State</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">04.04</span> Document detail drawer</h3>
+            <p class="desc">Side drawer: thumbnail, signer list with progress, audit timeline, actions.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Dialog</span><span class="chip primary">Badge</span><span class="chip primary">Avatar</span><span class="chip primary">Audit Event</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">04.05</span> Upload dialog</h3>
+            <p class="desc">Drag‑drop or click. Accepts PDF only. Progress + cancel.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Dialog</span><span class="chip primary">Button</span><span class="chip primary">Skeleton Loader</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">04.06</span> Bulk actions</h3>
+            <p class="desc">Row checkbox selection state. Floating action bar with archive / remind / delete.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Table</span><span class="chip primary">Button</span><span class="chip primary">Tooltip</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/04%20Documents.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="layout-template" style="width:14px;height:14px"></i> 5 frames · 3 annotations</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 64px,var(--surface) 64px 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">04.01 List</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 64px,var(--surface) 64px 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">04.02 Empty</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 64px,var(--surface) 64px 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">04.03 Upload</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 64px,var(--surface) 64px 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">04.04 Drawer</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 64px,var(--surface) 64px 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">04.05 Delete</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">Annotations</div>
+          </div>
+        </a>
+      </section>
+
+      <!-- 05 Editor -->
+      <section class="page" id="p05">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">05</span>Editor</h1>
+            <p class="subtitle">Field placement on a PDF. Sender drops fields, assigns each to a signer, sets order, sends.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; empty · ready</div>
+            <div><span class="label">layout</span>&nbsp; editor 1440×900</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">05.01</span> Editor — empty PDF</h3>
+            <p class="desc">Fresh upload. Sidebar shows 13 field types. Recipients = sender only.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Sidebar Section</span><span class="chip primary">Field‑Type Chip</span><span class="chip primary">Signer Color Chip</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">05.02</span> Adding recipients</h3>
+            <p class="desc">Add Signer / Recipient / Viewer rows. Color assigned per signer. Set signing order.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Input</span><span class="chip primary">Dropdown Menu</span><span class="chip primary">Signer Color Chip</span><span class="chip primary">Switch</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">05.03</span> Placing fields</h3>
+            <p class="desc">Mid‑placement state. Dragging a signature field onto canvas. Field properties popover on right.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Field‑Type Chip</span><span class="chip primary">Tooltip</span><span class="chip primary">Dialog</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">05.04</span> All 13 field types placed</h3>
+            <p class="desc">Showcase frame: signature, initials, name, email, phone, company, text, multiline_text, checkbox, radio, selection, date, strikethrough.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Field‑Type Chip</span><span class="chip primary">Signer Color Chip</span><span class="chip primary">Label</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">05.05</span> Send for Signature dialog</h3>
+            <p class="desc">Subject, message, send order summary, expiration. "Send" primary CTA.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Dialog</span><span class="chip primary">Input</span><span class="chip primary">Textarea</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">05.06</span> Sign Now (sender self‑sign)</h3>
+            <p class="desc">Editor in self‑sign mode. Single signer, Signature Pad open.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Signature Pad</span><span class="chip primary">Field‑Type Chip</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/05%20Editor.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="layout-template" style="width:14px;height:14px"></i> 7 frames · 2 annotations</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 22%,var(--surface-sunken) 22% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">05.01 Empty</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 22%,var(--surface-sunken) 22% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">05.02 Placed</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 22%,var(--surface-sunken) 22% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">05.03 Send</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 22%,var(--surface-sunken) 22% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">05.04 Props</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 22%,var(--surface-sunken) 22% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">05.05 Save</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">Annotations</div>
+          </div>
+        </a>
+      </section>
+
+      <!-- 06 Signer -->
+      <section class="page" id="p06">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">06</span>Signer</h1>
+            <p class="subtitle">No‑account flow. Recipient opens email link → mobile‑first sign experience. Desktop 1440 fallback centered.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; empty · ready</div>
+            <div><span class="label">layout</span>&nbsp; mobile signer 375×812</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">06.01</span> Welcome / intent‑to‑sign</h3>
+            <p class="desc">Document title, sender, page count. Required legal disclosure. "Begin" CTA.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Button</span><span class="chip primary">Avatar</span><span class="chip primary">Label</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">06.02</span> Document scroll + sticky next field</h3>
+            <p class="desc">PDF rendered in viewport. Sticky bottom bar shows next required field, progress.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Progress Stepper</span><span class="chip primary">Field‑Type Chip</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">06.03</span> Signature pad — draw / type / upload</h3>
+            <p class="desc">Three‑tab sheet. Save signature for future fields toggle.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Signature Pad</span><span class="chip primary">Tabs</span><span class="chip primary">Switch</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">06.04</span> Text / date / checkbox field entry</h3>
+            <p class="desc">In‑place input UI for non‑signature fields. Keyboard‑safe layout.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Input</span><span class="chip primary">Textarea</span><span class="chip primary">Switch</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">06.05</span> Decline to sign</h3>
+            <p class="desc">Confirm dialog with reason field. Sender is notified.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Dialog</span><span class="chip primary">Textarea</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">06.06</span> Completed / download copy</h3>
+            <p class="desc">Success state. Download signed PDF + audit certificate.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Empty State</span><span class="chip primary">Button</span><span class="chip primary">Toast</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/06%20Signer.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="smartphone" style="width:14px;height:14px"></i> 6 screens × {mobile + desktop} · 2 annotations</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px">
+            <div style="aspect-ratio:375/812;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 14%,var(--surface) 14% 86%,var(--surface-sunken) 86% 100%);display:flex;align-items:flex-end;justify-content:center;padding:4px;font-family:var(--font-mono);font-size:8px;color:var(--ink-faint)">01 Welcome</div>
+            <div style="aspect-ratio:375/812;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 14%,var(--surface-sunken) 14% 86%,var(--surface) 86% 100%);display:flex;align-items:flex-end;justify-content:center;padding:4px;font-family:var(--font-mono);font-size:8px;color:var(--ink-faint)">02 Review</div>
+            <div style="aspect-ratio:375/812;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 14%,var(--surface-sunken) 14% 60%,var(--surface-raised) 60% 100%);display:flex;align-items:flex-end;justify-content:center;padding:4px;font-family:var(--font-mono);font-size:8px;color:var(--ink-faint)">03 Sign pad</div>
+            <div style="aspect-ratio:375/812;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 14%,var(--surface) 14% 86%,var(--surface) 86% 100%);display:flex;align-items:flex-end;justify-content:center;padding:4px;font-family:var(--font-mono);font-size:8px;color:var(--ink-faint)">04 Fields</div>
+            <div style="aspect-ratio:375/812;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 14%,var(--surface-sunken) 14% 60%,var(--danger-soft) 60% 100%);display:flex;align-items:flex-end;justify-content:center;padding:4px;font-family:var(--font-mono);font-size:8px;color:var(--ink-faint)">05 Decline</div>
+            <div style="aspect-ratio:375/812;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 14%,var(--success-soft) 14% 100%);display:flex;align-items:flex-end;justify-content:center;padding:4px;font-family:var(--font-mono);font-size:8px;color:var(--ink-faint)">06 Success</div>
+          </div>
+        </a>
+      </section>
+
+      <!-- 07 Dashboard -->
+      <section class="page" id="p07">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">07</span>Dashboard</h1>
+            <p class="subtitle">Account overview. Activity, completion rates, pending actions. Sender's "home".</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; done · 3 frames</div>
+            <div><span class="label">layout</span>&nbsp; app‑shell 1440×900</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">07.01</span> Dashboard home</h3>
+            <p class="desc">Stat cards (Sent / Signed / Pending / Expired), recent activity feed, quick actions.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Top Nav</span><span class="chip primary">Card</span><span class="chip primary">Badge</span><span class="chip primary">Audit Event</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">07.02</span> Dashboard — empty</h3>
+            <p class="desc">First‑use state. Onboarding tiles guiding upload → send → sign.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Empty State</span><span class="chip primary">Card</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/07%20Dashboard.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="layout-dashboard" style="width:14px;height:14px"></i> 3 frames</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 12%,var(--surface-sunken) 12% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">07.01 Home</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 12%,var(--surface-sunken) 12% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">07.02 Empty</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 12%,var(--surface-sunken) 12% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">07.03 Drill-down</div>
+          </div>
+        </a>
+      </section>
+
+      <!-- 08 Templates & Contacts -->
+      <section class="page" id="p08">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">08</span>Templates &amp; Contacts</h1>
+            <p class="subtitle">Reusable Templates with pre‑placed Fields. Contacts directory for quick‑add to new sends.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; done · 4 frames + 1 anno</div>
+            <div><span class="label">layout</span>&nbsp; app‑shell 1440×900</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">08.01</span> Templates list</h3>
+            <p class="desc">Grid or table of saved Templates. Usage count, last used, tags. "Use template" action.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Table</span><span class="chip primary">Tag Chip</span><span class="chip primary">Dropdown Menu</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">08.02</span> Create template</h3>
+            <p class="desc">Editor in template mode. Roles instead of named signers (e.g. "Buyer", "Seller").</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Sidebar Section</span><span class="chip primary">Field‑Type Chip</span><span class="chip primary">Input</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">08.03</span> Contacts list</h3>
+            <p class="desc">Name, email, last used, document count. Search + filter.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Table</span><span class="chip primary">Avatar</span><span class="chip primary">Input</span><span class="chip primary">Dropdown Menu</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">08.04</span> Add / edit contact</h3>
+            <p class="desc">Dialog with name, email, phone, company, role.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Dialog</span><span class="chip primary">Input</span><span class="chip primary">Label</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/08%20Templates%20%26%20Contacts.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="bookmark" style="width:14px;height:14px"></i> 4 frames · 1 annotation</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 12%,var(--surface-sunken) 12% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">08.01 Templates list</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 22%,var(--surface-sunken) 22% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">08.02 Editor</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 17%,var(--surface-sunken) 17% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">08.03 Contacts list</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">08.04 CSV import</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">Anno · Add Contact</div>
+          </div>
+        </a>
+      </section>
+
+      <!-- 09 Admin -->
+      <section class="page" id="p09">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">09</span>Admin</h1>
+            <p class="subtitle">Workspace administration. Users + roles, audit log, branding. Viewer role read‑only across the product.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; done · 4 frames + 3 anno</div>
+            <div><span class="label">layout</span>&nbsp; app‑shell 1440×900</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">09.01</span> Users &amp; roles</h3>
+            <p class="desc">List of workspace users with role (Sender / Admin / Viewer). Invite, change role, remove.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Table</span><span class="chip primary">Avatar</span><span class="chip primary">Badge</span><span class="chip primary">Dropdown Menu</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">09.02</span> Invite user dialog</h3>
+            <p class="desc">Email + role select. Optional message.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Dialog</span><span class="chip primary">Input</span><span class="chip primary">Textarea</span><span class="chip primary">Dropdown Menu</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">09.03</span> Audit log</h3>
+            <p class="desc">Workspace‑wide event timeline. Filter by actor, action, date range.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Audit Event</span><span class="chip primary">Tabs</span><span class="chip primary">Input</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">09.04</span> Branding</h3>
+            <p class="desc">Logo, primary color, sender email "from" name, custom signing page banner.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Card</span><span class="chip primary">Input</span><span class="chip primary">Switch</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/09%20Admin.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="shield-check" style="width:14px;height:14px"></i> 4 frames · 3 annotations</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 17%,var(--surface-sunken) 17% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">09.01 Users</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 17%,var(--surface-sunken) 17% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">09.02 Audit Log</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 17%,var(--surface-sunken) 17% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">09.03 Settings</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 17%,var(--surface-sunken) 17% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">09.04 Branding</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">Anno · Invite + Toast + Destructive</div>
+          </div>
+        </a>
+      </section>
+
+      <!-- 10 System States -->
+      <section class="page" id="p10">
+        <header class="page-header">
+          <div>
+            <h1><span class="num">10</span>System States</h1>
+            <p class="subtitle">Cross‑cutting states every surface inherits: loading, empty, error, expired link, 404, no‑permission.</p>
+          </div>
+          <div class="meta">
+            <div><span class="label">status</span>&nbsp; done · 8 frames</div>
+            <div><span class="label">layout</span>&nbsp; mixed</div>
+          </div>
+        </header>
+
+        <div class="grid">
+          <div class="card">
+            <h3><span class="num">10.01</span> Loading skeletons</h3>
+            <p class="desc">Documents table, editor sidebar, audit log — all in shimmer state.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Skeleton Loader</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">10.02</span> Empty states catalog</h3>
+            <p class="desc">All 6 empty states side‑by‑side: documents, templates, contacts, audit, search, signer history.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Empty State</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">10.03</span> Error states</h3>
+            <p class="desc">Inline form errors, page‑level error, network failure with retry.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Toast</span><span class="chip primary">Button</span><span class="chip primary">Label</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">10.04</span> Signer link — expired</h3>
+            <p class="desc">Recipient clicks an expired email link. Request new link CTA.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Empty State</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">10.05</span> 404 / not found</h3>
+            <p class="desc">Document or page not found. Return to Documents.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Empty State</span><span class="chip primary">Button</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span class="num">10.06</span> Viewer — no permission</h3>
+            <p class="desc">Read‑only viewer attempts a send action. Inline lock state.</p>
+            <div class="uses-label">Components</div>
+            <div class="chips">
+              <span class="chip primary">Tooltip</span><span class="chip primary">Badge</span><span class="chip primary">Toast</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="pages/10%20System%20States.html" style="display:block;margin-top:24px;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-subtle);background:var(--surface-raised)">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)"><i data-lucide="construction" style="width:14px;height:14px"></i> 8 frames · mixed viewports</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-strong)">Open page <i data-lucide="arrow-right" style="width:13px;height:13px"></i></span>
+          </div>
+          <div style="padding:20px 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 12%,var(--surface-sunken) 12% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.01 · 404</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 12%,var(--surface-sunken) 12% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.02 · 500</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(180deg,oklch(0.97 0.008 75) 0 12%,var(--surface-sunken) 12% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.03 · Offline</div>
+            <div style="aspect-ratio:1440/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:linear-gradient(90deg,oklch(0.97 0.008 75) 0 50%,var(--surface-sunken) 50% 100%);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.04 · Session expired</div>
+            <div style="aspect-ratio:375/812;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.05 · Expired link</div>
+            <div style="aspect-ratio:760/900;border:1px solid var(--border);border-radius:var(--radius-sm);background:repeating-linear-gradient(180deg,var(--surface-sunken) 0 8px,var(--surface) 8px 14px);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.06 · Skeletons</div>
+            <div style="aspect-ratio:1/1;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.07 · Toasts</div>
+            <div style="aspect-ratio:2/3;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-sunken);display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:9px;color:var(--ink-faint)">10.08 · Inline errors</div>
+          </div>
+        </a>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // Page switcher
+  const nav = document.getElementById('page-nav');
+  const canvas = document.getElementById('canvas');
+  nav.addEventListener('click', (e) => {
+    const btn = e.target.closest('.page-row');
+    if (!btn) return;
+    document.querySelectorAll('.page-row').forEach(b => b.classList.toggle('active', b === btn));
+    const id = btn.dataset.page;
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id));
+    canvas.scrollTop = 0;
+  });
+
+  // Lucide icons
+  if (window.lucide) {
+    lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+  }
+</script>
+</body>
+</html>

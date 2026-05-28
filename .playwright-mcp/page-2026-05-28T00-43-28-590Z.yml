@@ -1,0 +1,214 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "ESign" [ref=e4] [cursor=pointer]:
+        - /url: /documents
+        - generic [ref=e5]: E
+        - generic [ref=e6]: ESign
+      - navigation [ref=e7]:
+        - link "Documents" [ref=e8] [cursor=pointer]:
+          - /url: /documents
+        - link "Templates" [ref=e9] [cursor=pointer]:
+          - /url: /templates
+        - link "Contacts" [ref=e10] [cursor=pointer]:
+          - /url: /contacts
+        - link "Dashboard" [ref=e11] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Configuration" [ref=e12] [cursor=pointer]:
+          - /url: /configuration
+      - button "My Company" [ref=e14]:
+        - generic [ref=e15]: MC
+        - generic [ref=e16]: My Company
+        - img [ref=e17]
+    - main [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - heading "Templates" [level=1] [ref=e23]
+            - paragraph [ref=e24]: Reusable documents with pre-placed fields and signer roles.
+          - generic [ref=e25]:
+            - button "Upload PDF" [ref=e26]:
+              - img [ref=e27]
+              - text: Upload PDF
+            - button "New Template" [ref=e30]:
+              - img [ref=e31]
+              - text: New Template
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - img [ref=e34]
+            - generic [ref=e37]: Search templates…
+          - button "All categories" [ref=e38]:
+            - text: All categories
+            - img [ref=e39]
+          - 'button "Sort: Recent" [ref=e41]':
+            - img [ref=e42]
+            - text: "Sort: Recent"
+            - img [ref=e44]
+          - generic [ref=e46]: 9 templates
+        - generic [ref=e48]:
+          - generic [ref=e49]:
+            - generic [ref=e52]:
+              - generic [ref=e64]: Signature
+              - generic [ref=e65]: Date
+            - generic [ref=e66]:
+              - generic [ref=e67]: NDA
+              - generic [ref=e68]:
+                - img [ref=e69]
+                - text: 5 fields
+            - generic [ref=e74]:
+              - heading "NDA — Standard" [level=4] [ref=e75]
+              - generic [ref=e76]: Last used 3 days ago
+            - generic [ref=e77]:
+              - button "Use" [ref=e78]:
+                - text: Use
+                - img [ref=e79]
+              - button [ref=e81]:
+                - img [ref=e82]
+          - generic [ref=e86]:
+            - generic [ref=e89]:
+              - generic [ref=e102]: Signature
+              - generic [ref=e103]: Date
+            - generic [ref=e104]:
+              - generic [ref=e105]: NDA
+              - generic [ref=e106]:
+                - img [ref=e107]
+                - text: 8 fields
+            - generic [ref=e112]:
+              - heading "NDA — Mutual" [level=4] [ref=e113]
+              - generic [ref=e114]: Last used yesterday
+            - generic [ref=e115]:
+              - button "Use" [ref=e116]:
+                - text: Use
+                - img [ref=e117]
+              - button [ref=e119]:
+                - img [ref=e120]
+          - generic [ref=e124]:
+            - generic [ref=e127]:
+              - generic [ref=e138]: Signature
+              - generic [ref=e139]: Date
+            - generic [ref=e140]:
+              - generic [ref=e141]: HR
+              - generic [ref=e142]:
+                - img [ref=e143]
+                - text: 7 fields
+            - generic [ref=e148]:
+              - heading "Offer Letter" [level=4] [ref=e149]
+              - generic [ref=e150]: Last used 5 days ago
+            - generic [ref=e151]:
+              - button "Use" [ref=e152]:
+                - text: Use
+                - img [ref=e153]
+              - button [ref=e155]:
+                - img [ref=e156]
+          - generic [ref=e160]:
+            - generic [ref=e163]:
+              - generic [ref=e177]: Signature
+              - generic [ref=e178]: Date
+            - generic [ref=e179]:
+              - generic [ref=e180]: Vendor
+              - generic [ref=e181]:
+                - img [ref=e182]
+                - text: 12 fields
+            - generic [ref=e187]:
+              - heading "Vendor MSA" [level=4] [ref=e188]
+              - generic [ref=e189]: Last used 2 weeks ago
+            - generic [ref=e190]:
+              - button "Use" [ref=e191]:
+                - text: Use
+                - img [ref=e192]
+              - button [ref=e194]:
+                - img [ref=e195]
+          - generic [ref=e199]:
+            - generic [ref=e202]:
+              - generic [ref=e214]: Signature
+              - generic [ref=e215]: Date
+            - generic [ref=e216]:
+              - generic [ref=e217]: Sales
+              - generic [ref=e218]:
+                - img [ref=e219]
+                - text: 9 fields
+            - generic [ref=e224]:
+              - heading "Statement of Work" [level=4] [ref=e225]
+              - generic [ref=e226]: Last used today
+            - generic [ref=e227]:
+              - button "Use" [ref=e228]:
+                - text: Use
+                - img [ref=e229]
+              - button [ref=e231]:
+                - img [ref=e232]
+          - generic [ref=e236]:
+            - generic [ref=e239]:
+              - generic [ref=e249]: Signature
+              - generic [ref=e250]: Date
+            - generic [ref=e251]:
+              - generic [ref=e252]: Brand
+              - generic [ref=e253]:
+                - img [ref=e254]
+                - text: 4 fields
+            - generic [ref=e259]:
+              - heading "Photography Release" [level=4] [ref=e260]
+              - generic [ref=e261]: Last used last month
+            - generic [ref=e262]:
+              - button "Use" [ref=e263]:
+                - text: Use
+                - img [ref=e264]
+              - button [ref=e266]:
+                - img [ref=e267]
+          - generic [ref=e271]:
+            - generic [ref=e274]:
+              - generic [ref=e287]: Signature
+              - generic [ref=e288]: Date
+            - generic [ref=e289]:
+              - generic [ref=e290]: Finance
+              - generic [ref=e291]:
+                - img [ref=e292]
+                - text: 11 fields
+            - generic [ref=e297]:
+              - heading "Equipment Lease" [level=4] [ref=e298]
+              - generic [ref=e299]: Last used 1 week ago
+            - generic [ref=e300]:
+              - button "Use" [ref=e301]:
+                - text: Use
+                - img [ref=e302]
+              - button [ref=e304]:
+                - img [ref=e305]
+          - generic [ref=e309]:
+            - generic [ref=e312]:
+              - generic [ref=e323]: Signature
+              - generic [ref=e324]: Date
+            - generic [ref=e325]:
+              - generic [ref=e326]: Tax
+              - generic [ref=e327]:
+                - img [ref=e328]
+                - text: 6 fields
+            - generic [ref=e333]:
+              - heading "W-9 Form" [level=4] [ref=e334]
+              - generic [ref=e335]: Last used 4 days ago
+            - generic [ref=e336]:
+              - button "Use" [ref=e337]:
+                - text: Use
+                - img [ref=e338]
+              - button [ref=e340]:
+                - img [ref=e341]
+          - generic [ref=e345]:
+            - generic [ref=e348]:
+              - generic [ref=e360]: Signature
+              - generic [ref=e361]: Date
+            - generic [ref=e362]:
+              - generic [ref=e363]: Brand
+              - generic [ref=e364]:
+                - img [ref=e365]
+                - text: 5 fields
+            - generic [ref=e370]:
+              - heading "Speaking Engagement" [level=4] [ref=e371]
+              - generic [ref=e372]: Last used 2 days ago
+            - generic [ref=e373]:
+              - button "Use" [ref=e374]:
+                - text: Use
+                - img [ref=e375]
+              - button [ref=e377]:
+                - img [ref=e378]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e387] [cursor=pointer]:
+    - img [ref=e388]
+  - alert [ref=e391]

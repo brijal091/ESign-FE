@@ -1,0 +1,45 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - banner [ref=e70]:
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e74]:
+            - generic [ref=e75]: "1"
+            - generic [ref=e76]: Review
+          - generic [ref=e79]:
+            - generic [ref=e80]: "2"
+            - generic [ref=e81]: Sign
+          - generic [ref=e84]:
+            - generic [ref=e85]: "3"
+            - generic [ref=e86]: Done
+        - button [ref=e87]:
+          - img [ref=e88]
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - strong [ref=e94]: 1 of 2
+          - text: fields completed
+        - generic [ref=e95]:
+          - img [ref=e96]
+          - text: Service Agreement
+    - generic [ref=e16]:
+      - generic [ref=e103]:
+        - button "signature REQ" [ref=e104]:
+          - img [ref=e105]
+          - generic [ref=e107]: signature
+          - generic [ref=e108]: REQ
+        - button "2026-05-28" [active] [ref=e124]:
+          - img [ref=e125]
+          - generic [ref=e112]: 2026-05-28
+      - generic [ref=e41]:
+        - img [ref=e114]
+        - text: Tap a highlighted field to fill it
+    - contentinfo [ref=e61]:
+      - generic [ref=e62]:
+        - button "Decline" [ref=e116]
+        - generic [ref=e117]:
+          - strong [ref=e118]: 1 / 2
+          - text: fields
+        - button "Finish" [disabled] [ref=e119]:
+          - text: Finish
+          - img [ref=e120]
+  - region "Notifications alt+T"

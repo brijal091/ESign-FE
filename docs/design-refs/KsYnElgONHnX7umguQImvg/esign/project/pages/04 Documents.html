@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · 04 Documents</title>
+
+<link rel="stylesheet" href="../assets/paraph.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+  body { font-family: var(--font-sans); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+  [data-lucide] { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<!-- Auth atoms (shared: Button, Input, Avatar, Toast, TagChip, Wordmark, etc) -->
+<script type="text/babel" src="auth/atoms.jsx"></script>
+<!-- Documents atoms (AppShell, Table, StatusBadge, Dialog, etc) -->
+<script type="text/babel" src="documents/atoms.jsx"></script>
+<!-- Documents frames -->
+<script type="text/babel" src="documents/frames.jsx"></script>
+<!-- Design canvas host -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+function Page() {
+  React.useEffect(() => {
+    const tick = () => window.lucide && window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    tick();
+    const id = setInterval(tick, 600);
+    return () => clearInterval(id);
+  }, []);
+
+  const FRAME_W = 1440;
+  const FRAME_H = 900;
+  const ANNO_W  = 440;
+  const ANNO_H  = 260;
+  const SKELETON_H = 360;
+
+  return (
+    <DesignCanvas
+      title="04 — Documents"
+      subtitle="Sender's primary surface · App Shell 1440×900 · Documents tab"
+    >
+      <DCSection
+        id="list"
+        title="01 · Documents list"
+        subtitle="Default view. 12 rows spanning all 7 statuses · pagination at the foot."
+      >
+        <DCArtboard id="docs-populated" label="04.01 Documents · populated" width={FRAME_W} height={FRAME_H}>
+          <DocumentsPopulatedFrame />
+        </DCArtboard>
+        <DCArtboard id="docs-empty" label="04.02 Documents · empty" width={FRAME_W} height={FRAME_H}>
+          <DocumentsEmptyFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="upload"
+        title="02 · Upload dialog"
+        subtitle="Drop zone + file-selected state. Disabled CTA until a file lands."
+      >
+        <DCArtboard id="upload-empty" label="04.03 Upload · drop zone" width={FRAME_W} height={FRAME_H}>
+          <UploadDialogFrame selected={false} />
+        </DCArtboard>
+        <DCArtboard id="upload-selected" label="04.03b Upload · file selected" width={FRAME_W} height={FRAME_H}>
+          <UploadDialogFrame selected />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="drawer"
+        title="03 · Document detail drawer"
+        subtitle="480w right slide-over. Overview · Activity · Signers tabs. Action bar at foot."
+      >
+        <DCArtboard id="doc-drawer" label="04.04 Document detail drawer" width={FRAME_W} height={FRAME_H}>
+          <DocumentDrawerFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="destructive"
+        title="04 · Bulk delete confirmation"
+        subtitle="Destructive dialog — used by bulk actions and per-row delete."
+      >
+        <DCArtboard id="bulk-delete" label="04.05 Delete 3 documents?" width={FRAME_W} height={FRAME_H}>
+          <BulkDeleteFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="annotations"
+        title="05 · Annotation micro-frames"
+        subtitle="Toasts and the loading skeleton — for engineering reference."
+      >
+        <DCArtboard id="anno-sent" label="Toast · document sent" width={ANNO_W} height={ANNO_H}>
+          <ToastDocSentAnno />
+        </DCArtboard>
+        <DCArtboard id="anno-deleted" label="Toast · documents deleted" width={ANNO_W} height={ANNO_H}>
+          <ToastDocsDeletedAnno />
+        </DCArtboard>
+        <DCArtboard id="anno-skeleton" label="Skeleton · 5 ghost rows" width={640} height={SKELETON_H}>
+          <SkeletonRowsAnno />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+</script>
+</body>
+</html>

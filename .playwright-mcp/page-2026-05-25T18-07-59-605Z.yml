@@ -1,0 +1,58 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e43]:
+    - banner [ref=e44]:
+      - link "Sign" [ref=e45] [cursor=pointer]:
+        - /url: /documents
+        - img [ref=e46]
+        - generic [ref=e48]: Sign
+      - navigation [ref=e49]:
+        - link "Documents" [ref=e50] [cursor=pointer]:
+          - /url: /documents
+        - link "Templates" [ref=e51] [cursor=pointer]:
+          - /url: "#"
+        - link "Reports" [ref=e52] [cursor=pointer]:
+          - /url: "#"
+        - link "Configuration" [ref=e53] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=e54]:
+        - generic [ref=e55]: My Company
+        - img [ref=e56]
+    - main [ref=e58]:
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - button "Send" [ref=e99]:
+            - img [ref=e100]
+            - text: Send
+          - button "Sign Now" [ref=e103]:
+            - img [ref=e104]
+            - text: Sign Now
+          - link "Documents" [ref=e106] [cursor=pointer]:
+            - /url: /documents
+            - img [ref=e107]
+            - text: Documents
+          - generic [ref=e109]: /
+          - textbox [ref=e110]: test.pdf
+          - generic [ref=e111]: Draft
+          - generic [ref=e112]:
+            - generic [ref=e113]: "Tags:"
+            - generic [ref=e114]:
+              - textbox "Add tag…" [ref=e115]
+              - button [ref=e116]:
+                - img [ref=e117]
+        - complementary [ref=e119]:
+          - generic [ref=e120]: Documents
+          - generic [ref=e121]:
+            - img [ref=e122]
+            - generic [ref=e125]: test.pdf
+          - button "Add signer" [ref=e131]:
+            - img [ref=e132]
+            - text: Add signer
+      - status [ref=e141]
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=e142]:
+        - img [ref=e144]
+        - generic [ref=e147]: Uploaded test.pdf
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert [ref=e42]

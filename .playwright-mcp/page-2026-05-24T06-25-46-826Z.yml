@@ -1,0 +1,32 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - link "ESign" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - text: ESign
+      - generic [ref=e8]:
+        - heading "Send, sign, and manage documents with confidence." [level=1] [ref=e9]
+        - paragraph [ref=e10]: Legally binding e-signatures backed by ESIGN Act and eIDAS compliance.
+      - paragraph [ref=e11]: © ESign
+    - main [ref=e12]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - heading "Verify email" [level=2] [ref=e38]
+          - paragraph [ref=e39]: Enter the 6-digit code we just emailed you.
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - text: 6-digit code
+            - textbox "6-digit code" [ref=e43]
+            - paragraph [ref=e44]: Sent to pw+1779603940498@example.com
+          - button "Verify" [ref=e45]
+          - button "Resend code" [ref=e46]
+        - button "← Use a different email" [ref=e48]
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=e49]:
+        - img [ref=e51]
+        - generic [ref=e54]: OTP sent to your email
+  - button "Open Next.js Dev Tools" [ref=e31] [cursor=pointer]:
+    - img [ref=e32]
+  - alert [ref=e35]

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · 03 Auth</title>
+
+<!-- Paraph DS tokens -->
+<link rel="stylesheet" href="../assets/paraph.css">
+
+<!-- Google Fonts: Geist, Geist Mono, Instrument Serif -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<!-- Lucide icons -->
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Render Lucide icons inside frames at 1.5 stroke */
+  [data-lucide] { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" src="auth/atoms.jsx"></script>
+<script type="text/babel" src="auth/frames.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+function Page() {
+  // After mount + on artboard render, re-init Lucide icons.
+  React.useEffect(() => {
+    const tick = () => window.lucide && window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    tick();
+    const id = setInterval(tick, 600); // catch lazily-rendered frames in focus mode
+    return () => clearInterval(id);
+  }, []);
+
+  const FRAME_W = 1440;
+  const FRAME_H = 900;
+  const ANNO_W  = 440;
+  const ANNO_H  = 260;
+
+  return (
+    <DesignCanvas
+      title="03 — Auth"
+      subtitle="Sender auth flows · Paraph DS · Auth Split 1440×900"
+    >
+      <DCSection
+        id="login"
+        title="01 · Login"
+        subtitle="Welcome surface. Returning sender enters credentials or hops to SSO."
+      >
+        <DCArtboard id="login-default" label="03.01 Login · default" width={FRAME_W} height={FRAME_H}>
+          <LoginFrame />
+        </DCArtboard>
+        <DCArtboard id="login-error" label="03.01b Login · email error" width={FRAME_W} height={FRAME_H}>
+          <LoginFrame error />
+        </DCArtboard>
+        <DCArtboard id="anno-login-toast" label="Annotation · failed sign-in toast" width={ANNO_W} height={ANNO_H}>
+          <ToastLoginErrorAnno />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="signup"
+        title="02 · Sign up"
+        subtitle="Three steps: Email → Verify → Organization. Stepper at the top of every step."
+      >
+        <DCArtboard id="signup-1" label="03.02 Sign up · email" width={FRAME_W} height={FRAME_H}>
+          <SignupEmailFrame />
+        </DCArtboard>
+        <DCArtboard id="signup-2" label="03.03 Sign up · verify (OTP)" width={FRAME_W} height={FRAME_H}>
+          <SignupOtpFrame />
+        </DCArtboard>
+        <DCArtboard id="signup-3" label="03.04 Sign up · organization" width={FRAME_W} height={FRAME_H}>
+          <SignupOrgFrame />
+        </DCArtboard>
+        <DCArtboard id="anno-otp-wrong" label="Annotation · OTP didn't match" width={ANNO_W} height={ANNO_H}>
+          <ToastOtpWrongAnno />
+        </DCArtboard>
+        <DCArtboard id="anno-otp-expired" label="Annotation · OTP expired" width={ANNO_W} height={ANNO_H}>
+          <ToastOtpExpiredAnno />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="forgot"
+        title="03 · Forgot password"
+        subtitle="Same three-step rhythm as sign up so the muscle-memory transfers."
+      >
+        <DCArtboard id="forgot-1" label="03.05 Forgot · email" width={FRAME_W} height={FRAME_H}>
+          <ForgotEmailFrame />
+        </DCArtboard>
+        <DCArtboard id="forgot-2" label="03.06 Forgot · verify (OTP)" width={FRAME_W} height={FRAME_H}>
+          <ForgotOtpFrame />
+        </DCArtboard>
+        <DCArtboard id="forgot-3" label="03.07 Forgot · new password" width={FRAME_W} height={FRAME_H}>
+          <ForgotNewPwdFrame />
+        </DCArtboard>
+        <DCArtboard id="anno-mismatch" label="Annotation · confirm-password mismatch" width={ANNO_W} height={ANNO_H}>
+          <InlineMismatchAnno />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="invite"
+        title="04 · Set password (invite acceptance)"
+        subtitle="Used when an Admin invites a Sender or Viewer to the workspace."
+      >
+        <DCArtboard id="set-password" label="03.08 Set password" width={FRAME_W} height={FRAME_H}>
+          <SetPasswordFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="confirm"
+        title="05 · Email-sent confirmation"
+        subtitle="Terminal state for password-reset and magic-link sends."
+      >
+        <DCArtboard id="email-sent" label="03.09 Email sent · confirmation" width={FRAME_W} height={FRAME_H}>
+          <EmailSentFrame />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · 10 System States</title>
+
+<link rel="stylesheet" href="../assets/paraph.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+  body { font-family: var(--font-sans); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+  [data-lucide] { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" src="auth/atoms.jsx"></script>
+<script type="text/babel" src="documents/atoms.jsx"></script>
+<script type="text/babel" src="system/atoms.jsx"></script>
+<script type="text/babel" src="system/frames.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+function Page() {
+  React.useEffect(() => {
+    const tick = () => window.lucide && window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    tick();
+    const id = setInterval(tick, 600);
+    return () => clearInterval(id);
+  }, []);
+
+  const APP_W = 1440, APP_H = 900;
+  const MICRO_W = 400;
+
+  return (
+    <DesignCanvas
+      title="10 — System States"
+      subtitle="Errors · empty link states · loading · feedback patterns. Laid out for at-a-glance review."
+    >
+      <DCSection
+        id="errors"
+        title="Row 1 · App-level errors"
+        subtitle="App Shell stays visible so users know where they are. Recovery actions are explicit and singular."
+      >
+        <DCArtboard id="not-found"     label="10.01 · 404 Page not found"   width={APP_W} height={APP_H}>
+          <NotFoundFrame />
+        </DCArtboard>
+        <DCArtboard id="server-error"  label="10.02 · 500 Something broke"  width={APP_W} height={APP_H}>
+          <ServerErrorFrame />
+        </DCArtboard>
+        <DCArtboard id="offline"       label="10.03 · Offline"              width={APP_W} height={APP_H}>
+          <OfflineFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="auth-recipient"
+        title="Row 2 · Authenticated &amp; recipient dead-ends"
+        subtitle="States where the user can't proceed in their current session — re-auth, expired links, in-flight loads."
+      >
+        <DCArtboard id="session-expired" label="10.04 · Session expired (Auth Split)" width={APP_W} height={APP_H}>
+          <SessionExpiredFrame />
+        </DCArtboard>
+        <DCArtboard id="expired-link"    label="10.05 · Expired signing link"        width={375}   height={812}>
+          <ExpiredLinkFrame />
+        </DCArtboard>
+        <DCArtboard id="skeletons"       label="10.06 · Loading skeletons (3 surfaces)" width={760}  height={900}>
+          <LoadingSkeletonsFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="feedback"
+        title="Row 3 · Inline feedback"
+        subtitle="Component-level patterns reused across the product: toasts for transient confirmations, error-state inputs for form validation."
+      >
+        <DCArtboard id="toasts" label="10.07 · Toast variants"        width={MICRO_W} height={400}>
+          <ToastVariantsFrame />
+        </DCArtboard>
+        <DCArtboard id="inline-errors" label="10.08 · Inline form errors" width={MICRO_W} height={600}>
+          <InlineErrorsFrame />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+</script>
+</body>
+</html>

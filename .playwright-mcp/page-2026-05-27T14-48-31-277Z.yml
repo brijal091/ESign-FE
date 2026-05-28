@@ -1,0 +1,184 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "ESign" [ref=e4] [cursor=pointer]:
+        - /url: /documents
+        - generic [ref=e5]: E
+        - generic [ref=e6]: ESign
+      - navigation [ref=e7]:
+        - link "Documents" [ref=e8] [cursor=pointer]:
+          - /url: /documents
+        - link "Templates" [ref=e9] [cursor=pointer]:
+          - /url: /templates
+        - link "Contacts" [ref=e10] [cursor=pointer]:
+          - /url: /contacts
+        - link "Dashboard" [ref=e11] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Configuration" [ref=e12] [cursor=pointer]:
+          - /url: /configuration
+      - button "My Company" [ref=e14]:
+        - generic [ref=e15]: MC
+        - generic [ref=e16]: My Company
+        - img [ref=e17]
+    - main [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - heading "Dashboard" [level=1] [ref=e23]
+            - generic [ref=e24]: Sending activity across your workspace · Feb 11 → Mar 12, 2026
+          - generic [ref=e25]:
+            - button "Today" [ref=e26]
+            - button "7 days" [ref=e27]
+            - button "30 days" [ref=e28]
+            - button "90 days" [ref=e29]
+            - button "Custom" [ref=e30]:
+              - img [ref=e31]
+              - text: Custom
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e35]:
+              - generic [ref=e36]: Total Sent
+              - generic [ref=e37]: 1,284
+              - generic [ref=e38]:
+                - generic [ref=e39]:
+                  - img [ref=e40]
+                  - text: +12%
+                - generic [ref=e43]: vs last period
+            - generic [ref=e44]:
+              - generic [ref=e45]: Completed
+              - generic [ref=e46]: "892"
+              - generic [ref=e47]:
+                - generic [ref=e48]:
+                  - img [ref=e49]
+                  - text: +8%
+                - generic [ref=e52]: vs last period
+            - generic [ref=e53]:
+              - generic [ref=e54]: Pending
+              - generic [ref=e55]: "267"
+              - generic [ref=e56]:
+                - generic [ref=e57]:
+                  - img [ref=e58]
+                  - text: −3%
+                - generic [ref=e61]: vs last period
+            - generic [ref=e62]:
+              - generic [ref=e63]: Avg. Time to Sign
+              - generic [ref=e64]: 1.4 days
+              - generic [ref=e65]:
+                - generic [ref=e66]:
+                  - img [ref=e67]
+                  - text: −0.2 days
+                - generic [ref=e70]: faster
+          - generic [ref=e71]:
+            - generic [ref=e72]:
+              - generic [ref=e73]:
+                - heading "Sending Volume" [level=3] [ref=e74]
+                - generic [ref=e75]:
+                  - generic [ref=e76]: Documents sent · daily
+                  - button [ref=e78]:
+                    - img [ref=e79]
+              - img [ref=e84]:
+                - generic [ref=e86]: "0"
+                - generic [ref=e88]: "26"
+                - generic [ref=e90]: "53"
+                - generic [ref=e92]: "79"
+                - generic [ref=e94]: "106"
+                - generic [ref=e97]: Mar 1
+                - generic [ref=e98]: Mar 6
+                - generic [ref=e99]: Mar 11
+                - generic [ref=e100]: Mar 16
+                - generic [ref=e101]: Mar 21
+                - generic [ref=e102]: Mar 26
+                - generic [ref=e103]: Mar 30
+                - generic [ref=e107]: "92"
+            - generic [ref=e108]:
+              - generic [ref=e109]:
+                - heading "Status Breakdown" [level=3] [ref=e110]
+                - generic [ref=e111]: 1,284 total
+              - generic [ref=e112]:
+                - img [ref=e114]:
+                  - generic [ref=e121]: 1,284
+                  - generic [ref=e122]: documents
+                - list [ref=e123]:
+                  - listitem [ref=e124]:
+                    - generic [ref=e126]: Fully Signed
+                    - generic [ref=e127]: "892"
+                    - generic [ref=e128]: 69%
+                  - listitem [ref=e129]:
+                    - generic [ref=e131]: Pending · To Sign
+                    - generic [ref=e132]: "267"
+                    - generic [ref=e133]: 21%
+                  - listitem [ref=e134]:
+                    - generic [ref=e136]: Drafts
+                    - generic [ref=e137]: "78"
+                    - generic [ref=e138]: 6%
+                  - listitem [ref=e139]:
+                    - generic [ref=e141]: Expired
+                    - generic [ref=e142]: "25"
+                    - generic [ref=e143]: 2%
+                  - listitem [ref=e144]:
+                    - generic [ref=e146]: Declined
+                    - generic [ref=e147]: "22"
+                    - generic [ref=e148]: 2%
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - generic [ref=e151]:
+                - heading "Recent Activity" [level=3] [ref=e152]
+                - generic [ref=e153]: Last 24 hours across all documents
+              - generic [ref=e154]: Live
+            - generic [ref=e156]:
+              - generic [ref=e157]:
+                - generic [ref=e159]:
+                  - generic [ref=e160]: Elena Marquez
+                  - generic [ref=e161]: signed
+                  - generic [ref=e162]: Mutual NDA · Acme × Northwind
+                - generic [ref=e163]: 2m ago
+              - generic [ref=e164]:
+                - generic [ref=e166]:
+                  - generic [ref=e167]: Lin Park
+                  - generic [ref=e168]: viewed
+                  - generic [ref=e169]: Q1 Contractor Onboarding
+                - generic [ref=e170]: 14m ago
+              - generic [ref=e171]:
+                - generic [ref=e173]:
+                  - generic [ref=e174]: Sana Ortiz
+                  - generic [ref=e175]: signed
+                  - generic [ref=e176]: NDA · Folio × Brightway
+                - generic [ref=e177]: 1h ago
+              - generic [ref=e178]:
+                - generic [ref=e180]:
+                  - generic [ref=e181]: You
+                  - generic [ref=e182]: sent
+                  - generic [ref=e183]: Vendor MSA · Brightway Print
+                - generic [ref=e184]: 2h ago
+              - generic [ref=e185]:
+                - generic [ref=e187]:
+                  - generic [ref=e188]: Caleb Mwangi
+                  - generic [ref=e189]: viewed
+                  - generic [ref=e190]: Offer Letter · Caleb Mwangi
+                - generic [ref=e191]: 3h ago
+              - generic [ref=e192]:
+                - generic [ref=e194]:
+                  - generic [ref=e195]: Priya Shastri
+                  - generic [ref=e196]: signed
+                  - generic [ref=e197]: "SOW #2026-014 · Lumen Studio"
+                - generic [ref=e198]: 4h ago
+              - generic [ref=e199]:
+                - generic [ref=e201]:
+                  - generic [ref=e202]: You
+                  - generic [ref=e203]: sent
+                  - generic [ref=e204]: Mutual NDA · Tessera × Folio
+                - generic [ref=e205]: yesterday
+              - generic [ref=e206]:
+                - generic [ref=e208]:
+                  - generic [ref=e209]: Daniel Park
+                  - generic [ref=e210]: declined
+                  - generic [ref=e211]: Equipment lease · Margate Co.
+                - generic [ref=e212]: yesterday
+            - link "View all activity" [ref=e214] [cursor=pointer]:
+              - /url: "#"
+              - text: View all activity
+              - img [ref=e215]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e222] [cursor=pointer]:
+    - img [ref=e223]
+  - alert [ref=e226]

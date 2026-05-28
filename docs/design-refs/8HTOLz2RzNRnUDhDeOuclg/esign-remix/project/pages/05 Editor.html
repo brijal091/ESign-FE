@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · 05 Editor</title>
+
+<link rel="stylesheet" href="../assets/paraph.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+  body { font-family: var(--font-sans); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+  [data-lucide] { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<!-- Shared atoms from prior pages -->
+<script type="text/babel" src="auth/atoms.jsx"></script>
+<script type="text/babel" src="documents/atoms.jsx"></script>
+
+<!-- Editor atoms + frames -->
+<script type="text/babel" src="editor/atoms.jsx"></script>
+<script type="text/babel" src="editor/frames.jsx"></script>
+
+<!-- Canvas host -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+function Page() {
+  React.useEffect(() => {
+    const tick = () => window.lucide && window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    tick();
+    const id = setInterval(tick, 600);
+    return () => clearInterval(id);
+  }, []);
+
+  const FRAME_W = 1440;
+  const FRAME_H = 900;
+  const ANNO_W  = 440;
+  const ANNO_H  = 220;
+
+  return (
+    <DesignCanvas
+      title="05 — Editor"
+      subtitle="Field placement on a PDF · Editor Layout 1440×900 · 13 field types"
+    >
+      <DCSection
+        id="empty"
+        title="01 · Empty editor"
+        subtitle="First open after upload. One Signer, no fields placed."
+      >
+        <DCArtboard id="editor-empty" label="05.01 Editor · empty" width={FRAME_W} height={FRAME_H}>
+          <EditorEmptyFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="placed"
+        title="02 · With 2 signers and 5 placed fields"
+        subtitle="Showcase frame. Selected field with floating action toolbar. Signer color tints differentiate ownership."
+      >
+        <DCArtboard id="editor-placed" label="05.02 Editor · placed fields" width={FRAME_W} height={FRAME_H}>
+          <EditorPlacedFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="send"
+        title="03 · Send for Signature dialog"
+        subtitle="Recipient order · Sign in order / Anyone first · Message · Expiry · Reminder."
+      >
+        <DCArtboard id="editor-send" label="05.03 Send for Signature" width={FRAME_W} height={FRAME_H}>
+          <EditorSendDialogFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="properties"
+        title="04 · Field properties popover"
+        subtitle="280w floating card. Type-specific inputs, signer dropdown, destructive delete."
+      >
+        <DCArtboard id="editor-props" label="05.04 Field properties popover" width={FRAME_W} height={FRAME_H}>
+          <EditorPropertiesFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="save-state"
+        title="05 · Save status states"
+        subtitle="Three top-bar variants — Saving… / Saved / Couldn't save (with Retry)."
+      >
+        <DCArtboard id="editor-saving" label="05.05a Saving…" width={FRAME_W} height={FRAME_H}>
+          <EditorSavingFrame />
+        </DCArtboard>
+        <DCArtboard id="editor-saved" label="05.05b Saved" width={FRAME_W} height={FRAME_H}>
+          <EditorSavedFrame />
+        </DCArtboard>
+        <DCArtboard id="editor-save-err" label="05.05c Couldn't save · Retry" width={FRAME_W} height={FRAME_H}>
+          <EditorSaveErrorFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="annotations"
+        title="06 · Annotation micro-frames"
+        subtitle="Toasts and the warning banner — engineering reference."
+      >
+        <DCArtboard id="anno-pdf-err" label="Toast · couldn't load PDF" width={ANNO_W} height={ANNO_H}>
+          <ToastPdfErrorAnno />
+        </DCArtboard>
+        <DCArtboard id="anno-warning" label="Pre-send warning banner" width={ANNO_W} height={ANNO_H}>
+          <WarningBannerAnno />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+</script>
+</body>
+</html>

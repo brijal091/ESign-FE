@@ -1,0 +1,56 @@
+- generic:
+  - generic:
+    - banner:
+      - link:
+        - /url: /documents
+        - img
+        - generic: Sign
+      - navigation:
+        - link:
+          - /url: /documents
+          - text: Documents
+        - link:
+          - /url: "#"
+          - text: Templates
+        - link:
+          - /url: "#"
+          - text: Reports
+        - link:
+          - /url: "#"
+          - text: Configuration
+      - generic:
+        - generic: My Company
+        - img
+    - main:
+      - generic:
+        - generic:
+          - button [expanded]:
+            - img
+            - text: Upload a PDF & Sign
+          - generic:
+            - generic: Documents
+          - generic:
+            - img
+            - textbox [disabled]:
+              - /placeholder: Search…
+        - generic:
+          - generic:
+            - img
+            - generic: No documents yet
+            - generic: Upload a PDF to get started.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert
+  - dialog "Upload a PDF" [ref=e80]:
+    - generic [ref=e81]:
+      - heading "Upload a PDF" [level=2] [ref=e82]
+      - paragraph [ref=e83]: Drop a PDF below or click to choose a file. You'll be taken to the editor to add fields.
+    - generic [ref=e84] [cursor=pointer]:
+      - img [ref=e85]
+      - generic [ref=e88]: Drop your PDF here
+      - generic [ref=e89]: or click to browse
+    - button "Cancel" [active] [ref=e91]
+    - button "Close" [ref=e92]:
+      - img [ref=e93]
+      - generic [ref=e96]: Close

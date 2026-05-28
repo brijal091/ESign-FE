@@ -1,0 +1,35 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - banner [ref=e70]:
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e74]:
+            - img [ref=e176]
+            - generic [ref=e76]: Review
+          - generic [ref=e79]:
+            - img [ref=e178]
+            - generic [ref=e81]: Sign
+          - generic [ref=e84]:
+            - generic [ref=e85]: "3"
+            - generic [ref=e86]: Done
+        - button [ref=e87]:
+          - img [ref=e88]
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - strong [ref=e94]: 2 of 2
+          - text: fields completed
+        - generic [ref=e95]:
+          - img [ref=e96]
+          - text: Service Agreement
+    - generic [ref=e16]:
+      - img [ref=e181]
+      - heading "All signed!" [level=2] [ref=e185]
+      - paragraph [ref=e186]: Your signature has been recorded. A copy will be emailed to you once everyone has signed.
+      - link "Download a copy" [ref=e188] [cursor=pointer]:
+        - /url: /api/be/signing/download?token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZjAzYjhkMy0yOGVjLTQwYzAtYmNhMS1lZjIyYzg0MWJhZjkiLCJkb2NJZCI6ImZlZjI5MjViLTRjZDAtNGRkMS1hOTU2LTQ1MDEzMzI4OWIyNiIsIm9yZ0lkIjoxLCJ0eXBlIjoic2lnbmluZyIsImlhdCI6MTc3OTk3NDE3OCwiZXhwIjoxNzgyNTY2MTc4fQ.eW70FrOlNXiJ5IpZQWDmcdmnB6gpNvo-aH-6HdhSu8I
+        - img [ref=e189]
+        - text: Download a copy
+      - generic [ref=e193]:
+        - img [ref=e194]
+        - text: Signed via ESign · Audit trail attached
+  - region "Notifications alt+T"

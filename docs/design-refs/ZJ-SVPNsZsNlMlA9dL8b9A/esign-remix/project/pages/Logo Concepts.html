@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · Logo Concepts</title>
+
+<link rel="stylesheet" href="../assets/paraph.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+  body { font-family: var(--font-sans); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+  [data-lucide] { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+
+// ─────────────────────────────────────────────────────────────
+// Concept marks — each is a clean, single-color SVG.
+// Pulled from the project's --brand token so they restyle if
+// the palette ever changes.
+// ─────────────────────────────────────────────────────────────
+
+// 1. Tri-arm — Letterform (E with a lifted middle arm)
+function MarkTriArm({ size = 120, color = "var(--color-brand)" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none"
+         stroke={color} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 12 V52" />
+      <path d="M16 12 H46" />
+      <path d="M16 32 L40 27" />
+      <path d="M16 52 H48" />
+    </svg>
+  );
+}
+
+// 2. Confirm — Action (filled checkmark, no stroke)
+function MarkConfirm({ size = 120, color = "var(--color-brand)" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M10 32 L24 46 L54 16 L46 8 L24 30 L18 24 Z" fill={color} />
+    </svg>
+  );
+}
+
+// 3. Minute — Seal (sealed disk with a hand pointing to "1 o'clock")
+function MarkMinute({ size = 120, color = "var(--color-brand)" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none"
+         stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="32" cy="32" r="22" />
+      <path d="M32 32 L46 18" />
+      <circle cx="32" cy="32" r="3" fill={color} stroke="none" />
+    </svg>
+  );
+}
+
+// 4. Beam — Speed (arrowhead + trailing dot)
+function MarkBeam({ size = 120, color = "var(--color-brand)" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M22 14 L56 32 L22 50 L30 32 Z" fill={color} />
+      <circle cx="10" cy="32" r="4" fill={color} />
+    </svg>
+  );
+}
+
+// 5. Pact — Wildcard (two filled chevrons meeting at a dot — handshake)
+function MarkPact({ size = 120, color = "var(--color-brand)" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64">
+      <path d="M8 16 L28 32 L8 48 Z" fill={color} />
+      <path d="M56 16 L36 32 L56 48 Z" fill={color} />
+      <circle cx="32" cy="32" r="3.5" fill={color} />
+    </svg>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Concept artboard layout
+// ─────────────────────────────────────────────────────────────
+
+const COLOR = "#C96442";        // project --brand (terracotta)
+const COLOR_INK = "#2d251c";    // for monochrome "K"
+
+function Bullet({ label, children }) {
+  return (
+    <div style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "baseline" }}>
+      <span style={{
+        fontFamily: "var(--font-mono)",
+        fontSize: 10,
+        textTransform: "uppercase",
+        letterSpacing: "0.08em",
+        color: "var(--color-ink-faint)",
+        flexShrink: 0,
+        width: 60,
+        paddingTop: 2,
+      }}>{label}</span>
+      <span style={{
+        fontFamily: "var(--font-sans)",
+        fontSize: 13,
+        lineHeight: 1.55,
+        color: "var(--color-ink-muted)",
+      }}>{children}</span>
+    </div>
+  );
+}
+
+// Wordmark — Geist 700, tight tracking. Same across all concepts.
+function Wordmark({ size = 30, color = "var(--color-ink)" }) {
+  return (
+    <span style={{
+      fontFamily: '"Geist", sans-serif',
+      fontWeight: 700,
+      fontSize: size,
+      letterSpacing: "-0.025em",
+      color,
+      lineHeight: 1,
+    }}>ESign</span>
+  );
+}
+
+// Logomark + wordmark, side by side
+function HorizontalLockup({ Mark, color = COLOR, markSize = 36, wordSize = 30, gap = 12 }) {
+  return (
+    <div style={{ display: "inline-flex", alignItems: "center", gap }}>
+      <Mark size={markSize} color={color} />
+      <Wordmark size={wordSize} />
+    </div>
+  );
+}
+
+// Reduced-size previews — 32 / 24 / 16
+function SizePreviews({ Mark }) {
+  return (
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
+      padding: "10px 14px",
+      background: "var(--color-surface-sunken)",
+      borderRadius: "var(--radius-sm)",
+      border: "1px solid var(--color-border-subtle)",
+    }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <Mark size={32} color={COLOR} />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, color: "var(--color-ink-faint)" }}>32</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <Mark size={24} color={COLOR} />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, color: "var(--color-ink-faint)" }}>24</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <Mark size={16} color={COLOR} />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, color: "var(--color-ink-faint)" }}>16</span>
+      </div>
+      <div style={{ width: 1, height: 28, background: "var(--color-border)", margin: "0 4px" }} />
+      {/* Monochrome ink test */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <Mark size={24} color="var(--color-ink)" />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, color: "var(--color-ink-faint)" }}>K</span>
+      </div>
+      {/* White-on-dark test */}
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4,
+        padding: "6px 8px 4px",
+        background: "var(--color-ink)",
+        borderRadius: 4,
+      }}>
+        <Mark size={24} color="#fff" />
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, color: "color-mix(in srgb, var(--color-paper) 60%, transparent)" }}>rev</span>
+      </div>
+    </div>
+  );
+}
+
+function ConceptCard({ family, name, Mark, rationale, lockup, usage }) {
+  return (
+    <div style={{
+      width: "100%", height: "100%",
+      padding: 32,
+      display: "flex",
+      flexDirection: "column",
+      background: "var(--color-surface)",
+      fontFamily: "var(--font-sans)",
+      color: "var(--color-ink)",
+    }}>
+      {/* Family tag */}
+      <div style={{
+        fontFamily: "var(--font-mono)",
+        fontSize: 10.5,
+        textTransform: "uppercase",
+        letterSpacing: "0.08em",
+        color: "var(--color-brand-strong)",
+        fontWeight: 600,
+        marginBottom: 8,
+      }}>{family}</div>
+
+      {/* Name */}
+      <h2 style={{
+        margin: 0,
+        fontFamily: "var(--font-display)",
+        fontStyle: "italic",
+        fontSize: 36,
+        fontWeight: 400,
+        letterSpacing: "-0.015em",
+        color: "var(--color-ink)",
+        lineHeight: 1,
+      }}>{name}</h2>
+
+      {/* Mark — large display */}
+      <div style={{
+        marginTop: 24,
+        marginBottom: 20,
+        padding: "32px 0",
+        background: "var(--color-paper)",
+        border: "1px solid var(--color-border-subtle)",
+        borderRadius: "var(--radius-md)",
+        display: "grid",
+        placeItems: "center",
+      }}>
+        <Mark size={120} color={COLOR} />
+      </div>
+
+      {/* Rationale */}
+      <p style={{
+        margin: "0 0 18px",
+        fontFamily: "var(--font-sans)",
+        fontSize: 14,
+        lineHeight: 1.55,
+        color: "var(--color-ink-muted)",
+      }}>{rationale}</p>
+
+      {/* Lockup */}
+      <Bullet label="Lockup">{lockup.description}</Bullet>
+      <div style={{
+        margin: "4px 0 14px",
+        padding: "14px 18px",
+        background: "var(--color-paper)",
+        border: "1px solid var(--color-border-subtle)",
+        borderRadius: "var(--radius-sm)",
+      }}>
+        <HorizontalLockup Mark={Mark} {...lockup.props} />
+      </div>
+
+      {/* Usage */}
+      <Bullet label="Use">{usage}</Bullet>
+
+      {/* Size previews + monochrome */}
+      <div style={{ marginTop: "auto", paddingTop: 14 }}>
+        <SizePreviews Mark={Mark} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Concept content
+// ─────────────────────────────────────────────────────────────
+
+const CONCEPTS = [
+  {
+    family: "A · Letterform",
+    name: "Tri-arm",
+    Mark: MarkTriArm,
+    rationale: "A geometric E whose middle arm shortens and rises 4° — the same gesture a hand makes when signing off. The construction is rigid, but the lifted bar gives it just enough personality to feel like a person, not a system.",
+    lockup: {
+      description: "Mark-only carries the brand. The E is itself a letter, so pairing it with a wordmark right next to it would be redundant — use a generous gap and let the mark feel like an oversized capital that starts the word.",
+      props: { markSize: 32, wordSize: 28, gap: 6 },
+    },
+    usage: "Best as a top-nav and avatar mark — the E is already a letterform, so it reads at the smallest sizes without needing the word.",
+  },
+  {
+    family: "B · Action",
+    name: "Confirm",
+    Mark: MarkConfirm,
+    rationale: "A solid filled checkmark drawn as a single closed shape — no strokes, no rounded ends, no circle backdrop. The geometry makes 'approved' feel deliberate and material, like a stamp impression rather than a pen tick.",
+    lockup: {
+      description: "Mark + 'ESign' wordmark side-by-side works strongest because the check is purely a symbol and benefits from the literal word for context, especially at first impression.",
+      props: { markSize: 30, wordSize: 28, gap: 10 },
+    },
+    usage: "Email headers, social avatars, marketing — any context where you're announcing the brand rather than abbreviating it.",
+  },
+  {
+    family: "C · Document / Seal",
+    name: "Minute",
+    Mark: MarkMinute,
+    rationale: "A seal-disk whose single radial line points to the 1 o'clock position — a deliberate reference to the brand promise 'in minutes.' Reads as clock, seal, signature flourish, and aperture all at once.",
+    lockup: {
+      description: "Mark + wordmark horizontal lockup. The circular mark balances well against horizontal text — they sit on the same baseline cleanly. Keep gap tight (8–10px) so they read as one signature.",
+      props: { markSize: 32, wordSize: 28, gap: 10 },
+    },
+    usage: "Footer marks, audit certificates, legal documents — the seal vocabulary signals trust. Caveat: the radial line gets thin below 24px; a favicon variant should drop the inner pivot dot.",
+  },
+  {
+    family: "D · Speed",
+    name: "Beam",
+    Mark: MarkBeam,
+    rationale: "A solid right-pointing arrowhead with a single trailing dot 14 grid-units behind it. The dot reads as both the sender's mouse cursor and a packet in transit. Geometric, abstract, no envelope iconography.",
+    lockup: {
+      description: "Mark + wordmark horizontal, mark sitting slightly larger than the cap-height to emphasize the forward motion. The mark literally points into the word.",
+      props: { markSize: 34, wordSize: 28, gap: 12 },
+    },
+    usage: "Send buttons, transactional emails, in-product 'document sent' confirmations. The directionality makes it perfect for action contexts; less suited for static brand marks.",
+  },
+  {
+    family: "E · Wildcard",
+    name: "Pact",
+    Mark: MarkPact,
+    rationale: "Two mirrored arrowheads pointing at each other, meeting at a central dot — the geometry of an agreement. Sender and signer converging. The dot at the seam is the moment the document becomes binding.",
+    lockup: {
+      description: "Horizontal lockup, mark slightly smaller than cap-height — the two-piece mark needs room to breathe, so a tight pairing would visually crowd it. Stacked also works for square-format avatars.",
+      props: { markSize: 28, wordSize: 28, gap: 11 },
+    },
+    usage: "Brand-level applications — about pages, hero marketing, partnership announcements. Carries the most narrative weight of any concept, so use where the story is being told.",
+  },
+];
+
+// ─────────────────────────────────────────────────────────────
+// Page
+// ─────────────────────────────────────────────────────────────
+
+function Page() {
+  React.useEffect(() => {
+    const tick = () => window.lucide && window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    tick();
+    const id = setInterval(tick, 600);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <DesignCanvas
+      title="ESign · Logo Concepts"
+      subtitle="5 directions across letterform, action, seal, speed, wildcard. Same wordmark (Geist 700, −0.025em), single brand color."
+    >
+      <DCSection
+        id="concepts"
+        title="Concept directions"
+        subtitle="Pick one to advance into a refined system (6 lockups + favicon variant)."
+      >
+        {CONCEPTS.map((c, i) => (
+          <DCArtboard
+            key={c.name}
+            id={"concept-" + (i + 1)}
+            label={`0${i + 1} · ${c.family} — ${c.name}`}
+            width={540}
+            height={820}
+          >
+            <ConceptCard {...c} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      <DCSection
+        id="incontext"
+        title="In context"
+        subtitle="Same wordmark, every mark — see them at the sizes they'll actually appear."
+      >
+        <DCArtboard id="favicon-row" label="Browser tab · 16px favicon at OS rendering" width={620} height={220}>
+          <FaviconRow />
+        </DCArtboard>
+        <DCArtboard id="topnav-row" label="App top-nav · 24×24 mark next to wordmark" width={620} height={220}>
+          <TopNavRow />
+        </DCArtboard>
+        <DCArtboard id="email-row" label="Email header · big-format, 1-color" width={620} height={300}>
+          <EmailRow />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+// In-context rows
+function FaviconRow() {
+  return (
+    <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 10, height: "100%" }}>
+      <div style={{
+        fontFamily: "var(--font-mono)",
+        fontSize: 10.5,
+        color: "var(--color-ink-subtle)",
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+      }}>Browser tab · 16px</div>
+      <div style={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-around",
+        background: "var(--color-paper)",
+        border: "1px solid var(--color-border-subtle)",
+        borderRadius: "var(--radius-md)",
+        padding: 20,
+      }}>
+        {CONCEPTS.map(c => (
+          <div key={c.name} style={{ textAlign: "center" }}>
+            {/* Mock tab */}
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 5,
+              padding: "5px 9px 5px 7px",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "8px 8px 0 0",
+              fontFamily: "var(--font-sans)",
+              fontSize: 11,
+              color: "var(--color-ink-muted)",
+            }}>
+              <c.Mark size={14} color={COLOR} />
+              <span>ESign</span>
+            </div>
+            <div style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              color: "var(--color-ink-faint)",
+              marginTop: 6,
+            }}>{c.name}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TopNavRow() {
+  return (
+    <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 10, height: "100%" }}>
+      <div style={{
+        fontFamily: "var(--font-mono)",
+        fontSize: 10.5,
+        color: "var(--color-ink-subtle)",
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+      }}>App top-nav · 24px mark + Geist wordmark</div>
+      <div style={{
+        flex: 1,
+        display: "grid",
+        gridTemplateColumns: "repeat(5, 1fr)",
+        gap: 8,
+      }}>
+        {CONCEPTS.map(c => (
+          <div key={c.name} style={{
+            display: "flex",
+            flexDirection: "column",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border-subtle)",
+            borderRadius: "var(--radius-sm)",
+            overflow: "hidden",
+          }}>
+            <div style={{
+              height: 44,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "0 12px",
+              borderBottom: "1px solid var(--color-border-subtle)",
+            }}>
+              <c.Mark size={20} color={COLOR} />
+              <Wordmark size={15} />
+            </div>
+            <div style={{
+              padding: "6px 12px",
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              color: "var(--color-ink-faint)",
+            }}>{c.name}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EmailRow() {
+  return (
+    <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 10, height: "100%" }}>
+      <div style={{
+        fontFamily: "var(--font-mono)",
+        fontSize: 10.5,
+        color: "var(--color-ink-subtle)",
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+      }}>Email header · single brand color on dark</div>
+      <div style={{
+        flex: 1,
+        display: "grid",
+        gridTemplateColumns: "repeat(5, 1fr)",
+        gap: 10,
+      }}>
+        {CONCEPTS.map(c => (
+          <div key={c.name} style={{
+            background: "var(--color-ink)",
+            borderRadius: "var(--radius-sm)",
+            padding: "20px 16px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <c.Mark size={26} color="#fff" />
+              <span style={{
+                fontFamily: '"Geist", sans-serif',
+                fontWeight: 700,
+                fontSize: 18,
+                letterSpacing: "-0.025em",
+                color: "#fff",
+              }}>ESign</span>
+            </div>
+            <div style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: 10.5,
+              color: "color-mix(in srgb, #fff 55%, transparent)",
+              marginTop: 12,
+            }}>secure signing</div>
+            <div style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9.5,
+              color: "color-mix(in srgb, #fff 35%, transparent)",
+              marginTop: 6,
+            }}>{c.name}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+</script>
+</body>
+</html>

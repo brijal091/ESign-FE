@@ -1,0 +1,13 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - banner [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: E
+        - generic [ref=e9]: ESign
+      - button [ref=e11]:
+        - img [ref=e12]
+    - generic [ref=e16]:
+      - img [ref=e18]
+      - heading "Something went wrong" [level=3] [ref=e20]
+      - paragraph [ref=e21]: Request failed (502)
+  - region "Notifications alt+T"

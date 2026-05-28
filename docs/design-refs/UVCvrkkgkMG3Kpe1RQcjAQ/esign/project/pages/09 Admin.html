@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · 09 Admin</title>
+
+<link rel="stylesheet" href="../assets/paraph.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+  body { font-family: var(--font-sans); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+  [data-lucide] { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" src="auth/atoms.jsx"></script>
+<script type="text/babel" src="documents/atoms.jsx"></script>
+<script type="text/babel" src="documents/frames.jsx"></script>
+<script type="text/babel" src="editor/atoms.jsx"></script>
+<script type="text/babel" src="admin/atoms.jsx"></script>
+<script type="text/babel" src="admin/frames.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+function Page() {
+  React.useEffect(() => {
+    const tick = () => window.lucide && window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    tick();
+    const id = setInterval(tick, 600);
+    return () => clearInterval(id);
+  }, []);
+
+  const FRAME_W = 1440;
+
+  return (
+    <DesignCanvas
+      title="09 — Admin"
+      subtitle="Configuration · Users · Audit Log · Account Settings · Branding"
+    >
+      <DCSection
+        id="people"
+        title="01 · People"
+        subtitle="User Management with role + status filters. Invite flow as a md Dialog annotation."
+      >
+        <DCArtboard id="users" label="09.01 Users" width={FRAME_W} height={900}>
+          <UsersFrame />
+        </DCArtboard>
+        <DCArtboard id="anno-invite" label="Anno · Invite User dialog (md)" width={780} height={680}>
+          <InviteUserDialogAnno />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="forensics"
+        title="02 · Forensics"
+        subtitle="Append-only Audit Log — every team-member and signer action with timestamp, IP, and UA."
+      >
+        <DCArtboard id="audit" label="09.02 Audit Log" width={FRAME_W} height={900}>
+          <AuditLogFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="settings"
+        title="03 · Workspace settings"
+        subtitle="General preferences (org identity, notifications, security, data retention) and visual brand."
+      >
+        <DCArtboard id="general" label="09.03 Account Settings · General" width={FRAME_W} height={1100}>
+          <GeneralSettingsFrame />
+        </DCArtboard>
+        <DCArtboard id="branding" label="09.04 Branding / White-label" width={FRAME_W} height={1100}>
+          <BrandingFrame />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="annotations"
+        title="04 · Annotations"
+        subtitle="Confirmation patterns: success toast for non-blocking save, destructive sm dialog for irreversible setting changes."
+      >
+        <DCArtboard id="anno-toast" label="Anno · Success toast" width={520} height={320}>
+          <BrandingToastAnno />
+        </DCArtboard>
+        <DCArtboard id="anno-destructive" label="Anno · Destructive confirm (sm)" width={620} height={420}>
+          <DestructiveConfirmAnno />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+- generic:
+  - generic:
+    - banner:
+      - link:
+        - /url: /documents
+        - img
+        - generic: Sign
+      - navigation:
+        - link:
+          - /url: /documents
+          - text: Documents
+        - link:
+          - /url: "#"
+          - text: Templates
+        - link:
+          - /url: "#"
+          - text: Reports
+        - link:
+          - /url: "#"
+          - text: Configuration
+      - generic:
+        - generic: My Company
+        - img
+    - main:
+      - generic:
+        - generic:
+          - button [expanded]:
+            - img
+            - text: Send
+          - button:
+            - img
+            - text: Sign Now
+          - link:
+            - /url: /documents
+            - img
+            - text: Documents
+          - generic: /
+          - textbox: NDA — pending review.pdf
+          - generic: Draft
+          - generic:
+            - generic: "Tags:"
+            - generic:
+              - textbox:
+                - /placeholder: Add tag…
+              - button:
+                - img
+        - generic:
+          - complementary:
+            - generic: Documents
+            - generic:
+              - img
+              - generic: NDA — pending review.pdf
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - button [expanded]:
+                          - img
+                        - button: Signer 1
+                      - generic:
+                        - generic:
+                          - button:
+                            - img
+                            - generic: Signature
+                          - button:
+                            - img
+                            - generic: Initials
+                          - button:
+                            - img
+                            - generic: Name
+                          - button:
+                            - img
+                            - generic: Email
+                          - button:
+                            - img
+                            - generic: Phone
+                          - button:
+                            - img
+                            - generic: Company
+                          - button:
+                            - img
+                            - generic: Text
+                          - button:
+                            - img
+                            - generic: Multiline Text
+                          - button:
+                            - img
+                            - generic: Checkbox
+                          - button:
+                            - img
+                            - generic: Radio
+                          - button:
+                            - img
+                            - generic: Selection
+                          - button:
+                            - img
+                            - generic: Date
+                          - button:
+                            - img
+                            - generic: Strikethrough
+            - generic:
+              - button:
+                - img
+                - text: Add signer
+          - button [ref=e156] [cursor=pointer]:
+            - img [ref=e143]
+            - generic [ref=e145]: Signature
+      - status
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e130] [cursor=pointer]:
+    - img [ref=e131]
+  - alert
+  - dialog "Send for signature" [ref=e158]:
+    - generic [ref=e159]:
+      - heading "Send for signature" [level=2] [ref=e160]
+      - paragraph [ref=e161]: 1 field placed across 1 signer.
+    - generic [ref=e162]:
+      - generic [ref=e163]:
+        - generic [ref=e164]: Signers
+        - generic [ref=e166]:
+          - textbox "Name" [active] [ref=e168]: Signer 1
+          - textbox "email@example.com" [ref=e169]: signer1@example.com
+      - generic [ref=e170]:
+        - generic [ref=e171]: Signing order
+        - generic [ref=e172]:
+          - button "sequential" [ref=e173]
+          - button "parallel" [ref=e174]
+        - generic [ref=e175]: Each signer is invited only after the previous one finishes.
+      - generic [ref=e177]:
+        - generic [ref=e178]: Expires
+        - textbox "Expires" [ref=e179]: 2026-06-22
+      - generic [ref=e180]:
+        - generic [ref=e181]: Message (optional)
+        - textbox "Message (optional)" [ref=e182]:
+          - /placeholder: Add a note for your signers…
+    - generic [ref=e183]:
+      - button "Cancel" [ref=e184]
+      - button "Send" [ref=e185]:
+        - img [ref=e186]
+        - text: Send
+    - button "Close" [ref=e189]:
+      - img [ref=e190]
+      - generic [ref=e193]: Close

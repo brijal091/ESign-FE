@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "Sign" [ref=e4] [cursor=pointer]:
+        - /url: /documents
+        - img [ref=e5]
+        - generic [ref=e7]: Sign
+      - navigation [ref=e8]:
+        - link "Documents" [ref=e9] [cursor=pointer]:
+          - /url: /documents
+        - link "Templates" [ref=e10] [cursor=pointer]:
+          - /url: "#"
+        - link "Reports" [ref=e11] [cursor=pointer]:
+          - /url: "#"
+        - link "Configuration" [ref=e12] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=e13]:
+        - generic [ref=e14]: My Company
+        - img [ref=e15]
+    - main [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - button "Upload a PDF & Sign" [ref=e20]:
+            - img [ref=e21]
+            - text: Upload a PDF & Sign
+          - generic [ref=e25]: Documents
+          - generic [ref=e26]:
+            - img [ref=e27]
+            - textbox "Search…" [disabled] [ref=e30]
+        - generic [ref=e32]: Loading…
+  - region "Notifications alt+T"

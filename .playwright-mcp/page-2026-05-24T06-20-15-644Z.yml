@@ -1,0 +1,32 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - link "ESign" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - text: ESign
+      - generic [ref=e8]:
+        - heading "Send, sign, and manage documents with confidence." [level=1] [ref=e9]
+        - paragraph [ref=e10]: Legally binding e-signatures backed by ESIGN Act and eIDAS compliance.
+      - paragraph [ref=e11]: © ESign
+    - main [ref=e12]:
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - heading "Sign in" [level=2] [ref=e16]
+          - paragraph [ref=e17]: Enter your email and password to access your account.
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - text: Email
+            - textbox "Email" [ref=e21]
+          - generic [ref=e22]:
+            - text: Password
+            - textbox "Password" [ref=e23]
+          - button "Sign in" [ref=e24]
+        - generic [ref=e26]:
+          - link "Forgot password?" [ref=e27] [cursor=pointer]:
+            - /url: /forgot-password
+          - generic [ref=e28]:
+            - text: New here?
+            - link "Create account" [ref=e29] [cursor=pointer]:
+              - /url: /signup
+  - region "Notifications alt+T"

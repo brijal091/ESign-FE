@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm --version)",
+      "Bash(npm install *)",
+      "Bash(pnpm typecheck *)",
+      "Bash(grep -vE \"\\(linked to|cache miss|executing|Remote|Progress|\\\\\\\\$ tsc\\)\")",
+      "Bash(pnpm lint *)",
+      "Bash(curl *)",
+      "Bash(pnpm dev *)",
+      "Read(//home/brijal/Desktop/vedra-esign/**)",
+      "Bash(mvn spring-boot:run)",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_close",
+      "Bash(ls src/main/java/com/vedra/esign/contactmanager/ src/main/java/com/vedra/esign/contactmanager/entity)",
+      "Bash(ls src/main/java/com/vedra/esign/contactmanager/controller)"
+    ]
+  }
+}

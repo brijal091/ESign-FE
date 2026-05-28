@@ -1,0 +1,161 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "Sign" [ref=e4] [cursor=pointer]:
+        - /url: /documents
+        - img [ref=e5]
+        - generic [ref=e7]: Sign
+      - navigation [ref=e8]:
+        - link "Documents" [ref=e9] [cursor=pointer]:
+          - /url: /documents
+        - link "Templates" [ref=e10] [cursor=pointer]:
+          - /url: "#"
+        - link "Reports" [ref=e11] [cursor=pointer]:
+          - /url: "#"
+        - link "Configuration" [ref=e12] [cursor=pointer]:
+          - /url: "#"
+      - generic [ref=e13]:
+        - generic [ref=e14]: My Company
+        - img [ref=e15]
+    - main [ref=e17]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - button "Send" [ref=e30]:
+            - img [ref=e31]
+            - text: Send
+          - button "Sign Now" [ref=e34]:
+            - img [ref=e35]
+            - text: Sign Now
+          - link "Documents" [ref=e37] [cursor=pointer]:
+            - /url: /documents
+            - img [ref=e38]
+            - text: Documents
+          - generic [ref=e40]: /
+          - textbox [ref=e41]: NDA — pending review.pdf
+          - generic [ref=e42]: Draft
+          - generic [ref=e43]:
+            - generic [ref=e44]: "Tags:"
+            - generic [ref=e45]:
+              - textbox "Add tag…" [ref=e46]
+              - button [ref=e47]:
+                - img [ref=e48]
+        - generic [ref=e49]:
+          - complementary [ref=e50]:
+            - generic [ref=e51]: Documents
+            - generic [ref=e52]:
+              - img [ref=e53]
+              - generic [ref=e56]: NDA — pending review.pdf
+            - generic [ref=e60]:
+              - generic [ref=e61]:
+                - generic [ref=e62]:
+                  - button [expanded] [ref=e63]:
+                    - img [ref=e64]
+                  - button "Signer 1" [ref=e67]
+                  - button "Remove signer" [ref=e68]:
+                    - img [ref=e69]
+                - generic [ref=e73]:
+                  - button "Signature" [ref=e74]:
+                    - img [ref=e75]
+                    - generic [ref=e77]: Signature
+                  - button "Initials" [ref=e78]:
+                    - img [ref=e79]
+                    - generic [ref=e81]: Initials
+                  - button "Name" [ref=e82]:
+                    - img [ref=e83]
+                    - generic [ref=e86]: Name
+                  - button "Email" [ref=e87]:
+                    - img [ref=e88]
+                    - generic [ref=e91]: Email
+                  - button "Phone" [ref=e92]:
+                    - img [ref=e93]
+                    - generic [ref=e95]: Phone
+                  - button "Company" [ref=e96]:
+                    - img [ref=e97]
+                    - generic [ref=e101]: Company
+                  - button "Text" [ref=e102]:
+                    - img [ref=e103]
+                    - generic [ref=e105]: Text
+                  - button "Multiline Text" [ref=e106]:
+                    - img [ref=e107]
+                    - generic [ref=e108]: Multiline Text
+                  - button "Checkbox" [ref=e109]:
+                    - img [ref=e110]
+                    - generic [ref=e113]: Checkbox
+                  - button "Radio" [ref=e114]:
+                    - img [ref=e115]
+                    - generic [ref=e118]: Radio
+                  - button "Selection" [ref=e119]:
+                    - img [ref=e120]
+                    - generic [ref=e122]: Selection
+                  - button "Date" [ref=e123]:
+                    - img [ref=e124]
+                    - generic [ref=e126]: Date
+                  - button "Strikethrough" [ref=e127]:
+                    - img [ref=e128]
+                    - generic [ref=e131]: Strikethrough
+              - generic [ref=e132]:
+                - generic [ref=e133]:
+                  - button [expanded] [ref=e134]:
+                    - img [ref=e135]
+                  - button "Signer 2" [ref=e138]
+                  - button "Remove signer" [ref=e139]:
+                    - img [ref=e140]
+                - generic [ref=e144]:
+                  - button "Signature" [ref=e145]:
+                    - img [ref=e146]
+                    - generic [ref=e148]: Signature
+                  - button "Initials" [ref=e149]:
+                    - img [ref=e150]
+                    - generic [ref=e152]: Initials
+                  - button "Name" [ref=e153]:
+                    - img [ref=e154]
+                    - generic [ref=e157]: Name
+                  - button "Email" [ref=e158]:
+                    - img [ref=e159]
+                    - generic [ref=e162]: Email
+                  - button "Phone" [ref=e163]:
+                    - img [ref=e164]
+                    - generic [ref=e166]: Phone
+                  - button "Company" [ref=e167]:
+                    - img [ref=e168]
+                    - generic [ref=e172]: Company
+                  - button "Text" [ref=e173]:
+                    - img [ref=e174]
+                    - generic [ref=e176]: Text
+                  - button "Multiline Text" [ref=e177]:
+                    - img [ref=e178]
+                    - generic [ref=e179]: Multiline Text
+                  - button "Checkbox" [ref=e180]:
+                    - img [ref=e181]
+                    - generic [ref=e184]: Checkbox
+                  - button "Radio" [ref=e185]:
+                    - img [ref=e186]
+                    - generic [ref=e189]: Radio
+                  - button "Selection" [ref=e190]:
+                    - img [ref=e191]
+                    - generic [ref=e193]: Selection
+                  - button "Date" [ref=e194]:
+                    - img [ref=e195]
+                    - generic [ref=e197]: Date
+                  - button "Strikethrough" [ref=e198]:
+                    - img [ref=e199]
+                    - generic [ref=e202]: Strikethrough
+            - button "Add signer" [ref=e204]:
+              - img [ref=e205]
+              - text: Add signer
+          - generic [ref=e211]:
+            - generic:
+              - button "Signature" [ref=e214] [cursor=pointer]:
+                - img [ref=e215]
+                - generic [ref=e217]: Signature
+              - button "Date" [ref=e218] [cursor=pointer]:
+                - img [ref=e219]
+                - generic [ref=e221]: Date
+              - button "Email" [ref=e222] [cursor=pointer]:
+                - img [ref=e223]
+                - generic [ref=e226]: Email
+      - status [ref=e235]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e24] [cursor=pointer]:
+    - img [ref=e25]
+  - alert [ref=e236]

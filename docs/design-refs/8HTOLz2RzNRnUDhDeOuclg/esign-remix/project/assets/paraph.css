@@ -1,0 +1,465 @@
+/* ============================================================
+   PARAPH DESIGN SYSTEM — Tokens
+   Palette: Warm Paper (peach / butter / clay)
+   All colors are oklch() for perceptual uniformity.
+   Paste the @theme block into your Tailwind v4 setup.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap");
+
+/* ------------------------------------------------------------
+   1) TAILWIND V4 @theme — paste this directly into your app
+      Every component should consume CSS variables, never hex.
+   ------------------------------------------------------------ */
+
+@theme {
+  /* ===== Color: surfaces ===== */
+  --color-paper:           oklch(0.987 0.008 75);     /* page background — warmest */
+  --color-surface:         oklch(0.996 0.004 75);     /* cards, table rows */
+  --color-surface-hover:   oklch(0.965 0.012 70);     /* row hover */
+  --color-surface-raised:  oklch(1     0     0);      /* modals, popovers */
+  --color-surface-sunken:  oklch(0.955 0.013 70);     /* input fields, code blocks */
+
+  /* ===== Color: ink (text) ===== */
+  --color-ink:             oklch(0.21  0.018 60);     /* primary text */
+  --color-ink-muted:       oklch(0.42  0.014 60);     /* secondary text */
+  --color-ink-subtle:      oklch(0.58  0.010 60);     /* tertiary, captions */
+  --color-ink-faint:       oklch(0.72  0.008 60);     /* placeholders, disabled */
+  --color-ink-inverse:     oklch(0.987 0.008 75);     /* text on dark/brand bg */
+
+  /* ===== Color: borders ===== */
+  --color-border:          oklch(0.910 0.010 65);     /* default 1px line */
+  --color-border-strong:   oklch(0.820 0.014 65);     /* active inputs, dividers */
+  --color-border-subtle:   oklch(0.945 0.008 65);     /* very faint dividers */
+
+  /* ===== Color: brand ===== */
+  --color-brand:           oklch(0.665 0.155 38);     /* terracotta-coral — primary */
+  --color-brand-hover:     oklch(0.610 0.165 38);
+  --color-brand-active:    oklch(0.565 0.170 38);
+  --color-brand-soft:      oklch(0.945 0.040 40);     /* tinted bg for soft buttons */
+  --color-brand-strong:    oklch(0.500 0.170 38);     /* text on brand-soft */
+
+  /* ===== Color: semantic — success (sage) ===== */
+  --color-success:         oklch(0.575 0.110 145);
+  --color-success-soft:    oklch(0.945 0.040 145);
+  --color-success-strong:  oklch(0.430 0.115 145);
+
+  /* ===== Color: semantic — warning (butter amber) ===== */
+  --color-warning:         oklch(0.760 0.140 75);
+  --color-warning-soft:    oklch(0.955 0.055 80);
+  --color-warning-strong:  oklch(0.525 0.135 65);
+
+  /* ===== Color: semantic — danger (clay red) ===== */
+  --color-danger:          oklch(0.605 0.180 22);
+  --color-danger-soft:     oklch(0.950 0.040 25);
+  --color-danger-strong:   oklch(0.475 0.180 22);
+
+  /* ===== Color: semantic — info (slate blue) ===== */
+  --color-info:            oklch(0.605 0.090 245);
+  --color-info-soft:       oklch(0.955 0.025 245);
+  --color-info-strong:     oklch(0.460 0.105 245);
+
+  /* ===== Color: status (badges) — alias semantic ===== */
+  --color-status-draft:    oklch(0.580 0.010 60);     /* neutral gray */
+  --color-status-sent:     var(--color-info);
+  --color-status-viewed:   oklch(0.640 0.130 280);    /* lavender */
+  --color-status-signed:   var(--color-success);
+  --color-status-declined: var(--color-danger);
+  --color-status-expired:  var(--color-warning-strong);
+
+  /* ===== Typography — families ===== */
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ===== Typography — size scale (px) ===== */
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 15px;     /* body — slightly above default for doc-heavy app */
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  30px;
+  --text-4xl:  36px;
+  --text-5xl:  48px;
+  --text-6xl:  60px;
+
+  /* ===== Typography — line heights ===== */
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.6;
+
+  /* ===== Typography — weights ===== */
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+
+  /* ===== Typography — tracking ===== */
+  --tracking-tight:  -0.02em;
+  --tracking-snug:   -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+
+  /* ===== Spacing — 4px base grid ===== */
+  --spacing-0:  0;
+  --spacing-1:  4px;
+  --spacing-2:  8px;
+  --spacing-3:  12px;
+  --spacing-4:  16px;
+  --spacing-5:  20px;
+  --spacing-6:  24px;
+  --spacing-8:  32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+
+  /* ===== Radii ===== */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+
+  /* ===== Shadows ===== */
+  --shadow-1: 0 1px 2px oklch(0.2 0.02 60 / 0.06);
+  --shadow-2: 0 8px 24px oklch(0.2 0.02 60 / 0.08), 0 2px 4px oklch(0.2 0.02 60 / 0.04);
+  --shadow-3: 0 24px 48px oklch(0.2 0.02 60 / 0.14), 0 4px 8px oklch(0.2 0.02 60 / 0.06);
+  --shadow-focus: 0 0 0 3px var(--color-brand-soft);
+
+  /* ===== Motion ===== */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 480ms;
+
+  /* ===== Breakpoints (desktop-first; sm/md/lg/xl) ===== */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* ------------------------------------------------------------
+   2) Semantic shorthand — these wrap the @theme tokens so
+      non-Tailwind consumers can use short names directly.
+      Equivalent to --color-* above without the prefix.
+   ------------------------------------------------------------ */
+
+:root {
+  --paper:           var(--color-paper);
+  --surface:         var(--color-surface);
+  --surface-hover:   var(--color-surface-hover);
+  --surface-raised:  var(--color-surface-raised);
+  --surface-sunken:  var(--color-surface-sunken);
+
+  --ink:             var(--color-ink);
+  --ink-muted:       var(--color-ink-muted);
+  --ink-subtle:      var(--color-ink-subtle);
+  --ink-faint:       var(--color-ink-faint);
+  --ink-inverse:     var(--color-ink-inverse);
+
+  --border:          var(--color-border);
+  --border-strong:   var(--color-border-strong);
+  --border-subtle:   var(--color-border-subtle);
+
+  --brand:           var(--color-brand);
+  --brand-hover:     var(--color-brand-hover);
+  --brand-active:    var(--color-brand-active);
+  --brand-soft:      var(--color-brand-soft);
+  --brand-strong:    var(--color-brand-strong);
+
+  --success:         var(--color-success);
+  --success-soft:    var(--color-success-soft);
+  --success-strong:  var(--color-success-strong);
+  --warning:         var(--color-warning);
+  --warning-soft:    var(--color-warning-soft);
+  --warning-strong:  var(--color-warning-strong);
+  --danger:          var(--color-danger);
+  --danger-soft:     var(--color-danger-soft);
+  --danger-strong:   var(--color-danger-strong);
+  --info:            var(--color-info);
+  --info-soft:       var(--color-info-soft);
+  --info-strong:     var(--color-info-strong);
+
+  --icon-stroke: 1.5;
+}
+
+/* ------------------------------------------------------------
+   2b) Browser-side fallback for the @theme block.
+       The @theme {} at-rule is a Tailwind v4 build-time directive;
+       a stock browser ignores it. We re-declare every token below
+       inside :root so that var(--color-*, --font-*, --text-*, etc.)
+       resolves in a plain HTML page that loads this file directly.
+   ------------------------------------------------------------ */
+
+:root {
+  /* Colors — surfaces */
+  --color-paper:          oklch(0.987 0.008 75);
+  --color-surface:        oklch(0.996 0.004 75);
+  --color-surface-hover:  oklch(0.965 0.012 70);
+  --color-surface-raised: oklch(1     0     0);
+  --color-surface-sunken: oklch(0.955 0.013 70);
+
+  /* Colors — ink */
+  --color-ink:         oklch(0.21  0.018 60);
+  --color-ink-muted:   oklch(0.42  0.014 60);
+  --color-ink-subtle:  oklch(0.58  0.010 60);
+  --color-ink-faint:   oklch(0.72  0.008 60);
+  --color-ink-inverse: oklch(0.987 0.008 75);
+
+  /* Colors — borders */
+  --color-border:        oklch(0.910 0.010 65);
+  --color-border-strong: oklch(0.820 0.014 65);
+  --color-border-subtle: oklch(0.945 0.008 65);
+
+  /* Colors — brand */
+  --color-brand:        oklch(0.665 0.155 38);
+  --color-brand-hover:  oklch(0.610 0.165 38);
+  --color-brand-active: oklch(0.565 0.170 38);
+  --color-brand-soft:   oklch(0.945 0.040 40);
+  --color-brand-strong: oklch(0.500 0.170 38);
+
+  /* Colors — semantic */
+  --color-success:        oklch(0.575 0.110 145);
+  --color-success-soft:   oklch(0.945 0.040 145);
+  --color-success-strong: oklch(0.430 0.115 145);
+  --color-warning:        oklch(0.760 0.140 75);
+  --color-warning-soft:   oklch(0.955 0.055 80);
+  --color-warning-strong: oklch(0.525 0.135 65);
+  --color-danger:         oklch(0.605 0.180 22);
+  --color-danger-soft:    oklch(0.950 0.040 25);
+  --color-danger-strong:  oklch(0.475 0.180 22);
+  --color-info:           oklch(0.605 0.090 245);
+  --color-info-soft:      oklch(0.955 0.025 245);
+  --color-info-strong:    oklch(0.460 0.105 245);
+
+  /* Colors — status */
+  --color-status-draft:    oklch(0.580 0.010 60);
+  --color-status-sent:     var(--color-info);
+  --color-status-viewed:   oklch(0.640 0.130 280);
+  --color-status-signed:   var(--color-success);
+  --color-status-declined: var(--color-danger);
+  --color-status-expired:  var(--color-warning-strong);
+
+  /* Shadows */
+  --shadow-1: 0 1px 2px oklch(0.2 0.02 60 / 0.06);
+  --shadow-2: 0 8px 24px oklch(0.2 0.02 60 / 0.08), 0 2px 4px oklch(0.2 0.02 60 / 0.04);
+  --shadow-3: 0 24px 48px oklch(0.2 0.02 60 / 0.14), 0 4px 8px oklch(0.2 0.02 60 / 0.06);
+  --shadow-focus: 0 0 0 3px var(--color-brand-soft);
+
+  /* Typography — families */
+  --font-sans:    "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono:    "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Typography — size scale */
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  30px;
+  --text-4xl:  36px;
+  --text-5xl:  48px;
+  --text-6xl:  60px;
+
+  /* Typography — line heights */
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.6;
+
+  /* Typography — weights */
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+
+  /* Typography — tracking */
+  --tracking-tight:  -0.02em;
+  --tracking-snug:   -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+
+  /* Spacing — 4px base grid */
+  --spacing-0:  0;
+  --spacing-1:  4px;
+  --spacing-2:  8px;
+  --spacing-3:  12px;
+  --spacing-4:  16px;
+  --spacing-5:  20px;
+  --spacing-6:  24px;
+  --spacing-8:  32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+
+  /* Radii */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 480ms;
+
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* ------------------------------------------------------------
+   3) Semantic text styles — drop-in classes that compose
+      family + size + weight + leading.
+   ------------------------------------------------------------ */
+
+.t-display-1 {
+  font-family: var(--font-display);
+  font-size: var(--text-6xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-display-2 {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-h4 {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-h5 {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+}
+.t-lead {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink-muted);
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-caption {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink-subtle);
+}
+.t-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-medium);
+  color: var(--ink);
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink-muted);
+  font-feature-settings: "ss01" on, "ss02" on;
+}
+
+/* ------------------------------------------------------------
+   4) Base resets — applied to <html> / <body> on real pages.
+   ------------------------------------------------------------ */
+
+html {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+body {
+  margin: 0;
+  font-feature-settings: "cv11" on, "ss01" on;
+}
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Focus ring — applies to every interactive element on keyboard nav */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}

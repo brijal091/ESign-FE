@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESign · 06 Signer</title>
+
+<link rel="stylesheet" href="../assets/paraph.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #f0eee9; }
+  body { font-family: var(--font-sans); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+  [data-lucide] { stroke-width: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<!-- Shared atoms from prior pages -->
+<script type="text/babel" src="auth/atoms.jsx"></script>
+<script type="text/babel" src="documents/atoms.jsx"></script>
+<script type="text/babel" src="editor/atoms.jsx"></script>
+
+<!-- Signer atoms + frames -->
+<script type="text/babel" src="signer/atoms.jsx"></script>
+<script type="text/babel" src="signer/frames.jsx"></script>
+
+<!-- Canvas host -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+
+<script type="text/babel">
+function Page() {
+  React.useEffect(() => {
+    const tick = () => window.lucide && window.lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+    tick();
+    const id = setInterval(tick, 600);
+    return () => clearInterval(id);
+  }, []);
+
+  const MW = 375, MH = 812;       // mobile artboard
+  const DW = 1440, DH = 900;      // desktop artboard
+  const ANNO_W = 440, ANNO_H = 220;
+
+  return (
+    <DesignCanvas
+      title="06 — Signer"
+      subtitle="No-account flow · mobile-first 375×812 · desktop fallback 1440 centered max-720"
+    >
+      <DCSection
+        id="welcome"
+        title="01 · Welcome (intent-to-sign)"
+        subtitle="Sender attribution · filename + duration · ESIGN/eIDAS consent checkbox · disabled Continue until consented."
+      >
+        <DCArtboard id="welcome-mobile" label="06.01 Welcome · mobile" width={MW} height={MH}>
+          <SignerWelcomeScreen mode="mobile" consented />
+        </DCArtboard>
+        <DCArtboard id="welcome-desktop" label="06.01 Welcome · desktop fallback" width={DW} height={DH}>
+          <SignerWelcomeScreen mode="desktop" consented />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="review"
+        title="02 · Document review"
+        subtitle="Stepper + progress bar. Required-but-empty fields glow primary. Sticky bottom action bar with Previous / Next."
+      >
+        <DCArtboard id="review-mobile" label="06.02 Review · mobile" width={MW} height={MH}>
+          <SignerReviewScreen mode="mobile" />
+        </DCArtboard>
+        <DCArtboard id="review-desktop" label="06.02 Review · desktop fallback" width={DW} height={DH}>
+          <SignerReviewScreen mode="desktop" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="signpad"
+        title="03 · Signature pad open"
+        subtitle="Draw / Type / Upload tabs · Draw active with sample stroke · Use-for-all toggle."
+      >
+        <DCArtboard id="signpad-mobile" label="06.03 Signature pad · mobile" width={MW} height={MH}>
+          <SignerSignaturePadScreen mode="mobile" />
+        </DCArtboard>
+        <DCArtboard id="signpad-desktop" label="06.03 Signature pad · desktop fallback" width={DW} height={DH}>
+          <SignerSignaturePadScreen mode="desktop" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="fields"
+        title="04 · Field interactions cluster"
+        subtitle="(a) text focused · (b) two checkboxes · (c) date with calendar open · (d) selection dropdown open."
+      >
+        <DCArtboard id="fields-mobile" label="06.04 Field interactions · mobile" width={MW} height={MH}>
+          <SignerFieldInteractionsScreen mode="mobile" />
+        </DCArtboard>
+        <DCArtboard id="fields-desktop" label="06.04 Field interactions · desktop fallback" width={DW} height={DH}>
+          <SignerFieldInteractionsScreen mode="desktop" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="decline"
+        title="05 · Decline reason"
+        subtitle="Destructive confirm dialog · optional reason textarea."
+      >
+        <DCArtboard id="decline-mobile" label="06.05 Decline · mobile" width={MW} height={MH}>
+          <SignerDeclineScreen mode="mobile" />
+        </DCArtboard>
+        <DCArtboard id="decline-desktop" label="06.05 Decline · desktop fallback" width={DW} height={DH}>
+          <SignerDeclineScreen mode="desktop" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="success"
+        title="06 · Success"
+        subtitle="Stepper complete · large check · download/done · audit trail caption."
+      >
+        <DCArtboard id="success-mobile" label="06.06 Success · mobile" width={MW} height={MH}>
+          <SignerSuccessScreen mode="mobile" />
+        </DCArtboard>
+        <DCArtboard id="success-desktop" label="06.06 Success · desktop fallback" width={DW} height={DH}>
+          <SignerSuccessScreen mode="desktop" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="annotations"
+        title="07 · Annotation frames"
+        subtitle="Expired link state + offline banner. Engineering reference."
+      >
+        <DCArtboard id="expired-mobile" label="Annotation · expired link" width={MW} height={MH}>
+          <SignerExpiredScreen mode="mobile" />
+        </DCArtboard>
+        <DCArtboard id="offline-banner" label="Annotation · offline banner" width={ANNO_W} height={ANNO_H}>
+          <OfflineBannerAnno />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+</script>
+</body>
+</html>

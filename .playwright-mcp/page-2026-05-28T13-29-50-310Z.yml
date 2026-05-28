@@ -1,0 +1,51 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - banner [ref=e5]:
+      - generic [ref=e7]:
+        - generic [ref=e8]: E
+        - generic [ref=e9]: ESign
+      - button [ref=e11]:
+        - img [ref=e12]
+    - generic [ref=e16]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - img [ref=e23]
+          - generic [ref=e26]:
+            - generic [ref=e27]: Invitation to sign
+            - heading "You've been invited to sign" [level=3] [ref=e28]
+        - paragraph [ref=e29]: Hi Alice Tester, please review and sign the document below.
+        - generic [ref=e30]:
+          - img [ref=e32]
+          - generic [ref=e35]:
+            - generic [ref=e36]: Signer Browser Test
+            - generic [ref=e37]:
+              - generic [ref=e38]: 1 page
+              - generic [ref=e39]: ·
+              - generic [ref=e40]: 2 fields to complete
+      - generic [ref=e41]:
+        - generic [ref=e42]: Consent to electronic signature
+        - paragraph [ref=e43]:
+          - text: By clicking
+          - strong [ref=e44]: Continue
+          - text: ", you agree that your electronic signature has the same legal effect as a handwritten signature, in accordance with the ESIGN Act and eIDAS."
+        - generic [ref=e45] [cursor=pointer]:
+          - checkbox "I agree to use electronic signatures." [checked] [active] [ref=e46]:
+            - img [ref=e68]
+          - generic [ref=e47]: I agree to use electronic signatures.
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - img [ref=e50]
+          - text: SOC 2 · AES-256
+        - generic [ref=e53]:
+          - img [ref=e54]
+          - text: End-to-end encrypted
+        - generic [ref=e57]:
+          - img [ref=e58]
+          - text: Audit trail included
+    - contentinfo [ref=e61]:
+      - generic [ref=e63]:
+        - button "Continue" [ref=e64]:
+          - text: Continue
+          - img [ref=e65]
+        - button "Decline" [ref=e67]
+  - region "Notifications alt+T"

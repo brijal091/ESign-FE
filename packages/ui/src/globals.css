@@ -1,0 +1,325 @@
+@import "tailwindcss";
+
+/* ============================================================
+   ESign · Paraph Design System
+   Palette: Warm Paper (peach / butter / clay)
+   Type: Geist (sans) · Instrument Serif (display) · Geist Mono
+   Icons: Lucide @ 1.5px stroke
+   ============================================================ */
+
+@theme {
+  /* ===== Surfaces ===== */
+  --color-paper:           oklch(0.987 0.008 75);
+  --color-surface:         oklch(0.996 0.004 75);
+  --color-surface-hover:   oklch(0.965 0.012 70);
+  --color-surface-raised:  oklch(1     0     0);
+  --color-surface-sunken:  oklch(0.955 0.013 70);
+
+  /* ===== Ink (text) ===== */
+  --color-ink:             oklch(0.21  0.018 60);
+  --color-ink-muted:       oklch(0.42  0.014 60);
+  --color-ink-subtle:      oklch(0.58  0.010 60);
+  --color-ink-faint:       oklch(0.72  0.008 60);
+  --color-ink-inverse:     oklch(0.987 0.008 75);
+
+  /* ===== Borders ===== */
+  --color-border:          oklch(0.910 0.010 65);
+  --color-border-strong:   oklch(0.820 0.014 65);
+  --color-border-subtle:   oklch(0.945 0.008 65);
+
+  /* ===== Brand (terracotta-coral) ===== */
+  --color-brand:           oklch(0.665 0.155 38);
+  --color-brand-hover:     oklch(0.610 0.165 38);
+  --color-brand-active:    oklch(0.565 0.170 38);
+  --color-brand-soft:      oklch(0.945 0.040 40);
+  --color-brand-strong:    oklch(0.500 0.170 38);
+
+  /* ===== Semantic — success (sage) ===== */
+  --color-success:         oklch(0.575 0.110 145);
+  --color-success-soft:    oklch(0.945 0.040 145);
+  --color-success-strong:  oklch(0.430 0.115 145);
+
+  /* ===== Semantic — warning (butter amber) ===== */
+  --color-warning:         oklch(0.760 0.140 75);
+  --color-warning-soft:    oklch(0.955 0.055 80);
+  --color-warning-strong:  oklch(0.525 0.135 65);
+
+  /* ===== Semantic — danger (clay red) ===== */
+  --color-danger:          oklch(0.605 0.180 22);
+  --color-danger-soft:     oklch(0.950 0.040 25);
+  --color-danger-strong:   oklch(0.475 0.180 22);
+
+  /* ===== Semantic — info (slate blue) ===== */
+  --color-info:            oklch(0.605 0.090 245);
+  --color-info-soft:       oklch(0.955 0.025 245);
+  --color-info-strong:     oklch(0.460 0.105 245);
+
+  /* ===== Status (document statuses, badge mapping) ===== */
+  --color-status-draft:    oklch(0.580 0.010 60);     /* neutral gray */
+  --color-status-sent:     oklch(0.605 0.090 245);    /* info */
+  --color-status-viewed:   oklch(0.640 0.130 280);    /* lavender */
+  --color-status-signed:   oklch(0.760 0.140 75);     /* warning amber (partially signed) */
+  --color-status-completed:oklch(0.575 0.110 145);    /* success */
+  --color-status-declined: oklch(0.580 0.010 60);     /* muted (cancelled) */
+  --color-status-expired:  oklch(0.605 0.180 22);     /* danger */
+
+  /* ===== Signer color palette (per-person decoration) ===== */
+  --color-signer-1: oklch(0.65 0.16 145);
+  --color-signer-2: oklch(0.62 0.16 245);
+  --color-signer-3: oklch(0.62 0.18 295);
+  --color-signer-4: oklch(0.68 0.16 40);
+  --color-signer-5: oklch(0.66 0.14 200);
+  --color-signer-6: oklch(0.64 0.18 350);
+
+  /* ===== Typography ===== */
+  --font-sans:    "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono:    "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   20px;
+  --text-2xl:  24px;
+  --text-3xl:  30px;
+  --text-4xl:  36px;
+  --text-5xl:  48px;
+  --text-6xl:  60px;
+
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.6;
+
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+
+  --tracking-tight:  -0.02em;
+  --tracking-snug:   -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+
+  /* ===== Spacing — 4px base ===== */
+  --spacing-0:  0;
+  --spacing-1:  4px;
+  --spacing-2:  8px;
+  --spacing-3:  12px;
+  --spacing-4:  16px;
+  --spacing-5:  20px;
+  --spacing-6:  24px;
+  --spacing-8:  32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+
+  /* ===== Radii ===== */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+  --radius:      10px;
+
+  /* ===== Shadows ===== */
+  --shadow-1: 0 1px 2px oklch(0.2 0.02 60 / 0.06);
+  --shadow-2: 0 8px 24px oklch(0.2 0.02 60 / 0.08), 0 2px 4px oklch(0.2 0.02 60 / 0.04);
+  --shadow-3: 0 24px 48px oklch(0.2 0.02 60 / 0.14), 0 4px 8px oklch(0.2 0.02 60 / 0.06);
+  --shadow-focus: 0 0 0 3px oklch(0.945 0.040 40);
+
+  /* ===== Motion ===== */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 480ms;
+
+  /* ===== Breakpoints ===== */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* ------------------------------------------------------------
+   Short-name aliases for non-Tailwind consumers (raw HTML/CSS).
+   ------------------------------------------------------------ */
+
+:root {
+  --paper:           var(--color-paper);
+  --surface:         var(--color-surface);
+  --surface-hover:   var(--color-surface-hover);
+  --surface-raised:  var(--color-surface-raised);
+  --surface-sunken:  var(--color-surface-sunken);
+
+  --ink:             var(--color-ink);
+  --ink-muted:       var(--color-ink-muted);
+  --ink-subtle:      var(--color-ink-subtle);
+  --ink-faint:       var(--color-ink-faint);
+  --ink-inverse:     var(--color-ink-inverse);
+
+  --border:          var(--color-border);
+  --border-strong:   var(--color-border-strong);
+  --border-subtle:   var(--color-border-subtle);
+
+  --brand:           var(--color-brand);
+  --brand-hover:     var(--color-brand-hover);
+  --brand-active:    var(--color-brand-active);
+  --brand-soft:      var(--color-brand-soft);
+  --brand-strong:    var(--color-brand-strong);
+
+  --success:         var(--color-success);
+  --success-soft:    var(--color-success-soft);
+  --success-strong:  var(--color-success-strong);
+  --warning:         var(--color-warning);
+  --warning-soft:    var(--color-warning-soft);
+  --warning-strong:  var(--color-warning-strong);
+  --danger:          var(--color-danger);
+  --danger-soft:     var(--color-danger-soft);
+  --danger-strong:   var(--color-danger-strong);
+  --info:            var(--color-info);
+  --info-soft:       var(--color-info-soft);
+  --info-strong:     var(--color-info-strong);
+
+  --icon-stroke: 1.5;
+}
+
+/* ------------------------------------------------------------
+   Semantic text classes — drop-in typography.
+   ------------------------------------------------------------ */
+
+.t-display-1 {
+  font-family: var(--font-display);
+  font-size: var(--text-6xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-display-2 {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-h4 {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ink);
+}
+.t-eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-subtle);
+}
+.t-lead {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink-muted);
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+}
+.t-caption {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink-subtle);
+}
+.t-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  font-weight: var(--font-weight-medium);
+  color: var(--ink);
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------
+   Base resets.
+   ------------------------------------------------------------ */
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    background: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    font-feature-settings: "cv11" on, "ss01" on;
+  }
+
+  /* Lucide icons consistent stroke weight. */
+  [data-lucide], .lucide { stroke-width: 1.5; }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+    border-radius: var(--radius-sm);
+  }
+}
