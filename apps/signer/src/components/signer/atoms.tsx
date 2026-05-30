@@ -1,14 +1,25 @@
 import type { ReactNode } from 'react'
 import {
-  X,
+  AlignLeft,
+  Building2,
+  Calendar,
+  CaseSensitive,
   Check,
-  FileText,
+  CircleCheck,
+  CircleDot,
   Clock,
   FileSignature,
+  FileText,
+  List,
+  Mail,
   PenLine,
-  Calendar,
-  Type as TypeIcon,
-  CircleCheck,
+  PenTool,
+  Phone,
+  SquareCheck,
+  Strikethrough,
+  TextCursorInput,
+  User,
+  X,
 } from 'lucide-react'
 
 /* ============ Wordmark ============ */
@@ -230,11 +241,19 @@ export function SignerPdfPage({ children }: { children?: ReactNode }) {
 
 /* ============ Signer overlay field ============ */
 const FIELD_ICON: Record<string, typeof PenLine> = {
-  signature: PenLine,
-  initials: PenLine,
-  name: TypeIcon,
-  email: TypeIcon,
+  signature: PenTool,
+  initials: CaseSensitive,
+  name: User,
+  email: Mail,
+  phone: Phone,
+  company: Building2,
+  text: TextCursorInput,
+  multiline_text: AlignLeft,
+  checkbox: SquareCheck,
+  radio: CircleDot,
+  selection: List,
   date: Calendar,
+  strikethrough: Strikethrough,
 }
 
 export function SignerField({

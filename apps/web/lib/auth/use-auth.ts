@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 import type { AuthSession } from '@esign/types'
 import { readRawSession, subscribe, writeSession } from './token-store'
 
@@ -29,10 +29,16 @@ export function useAuthSession(): AuthSession | null {
 
 export function useAuth() {
   const session = useAuthSession()
+  const [isHydrated, setIsHydrated] = useState(false)
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
   const signOut = useCallback(() => writeSession(null), [])
   return {
     session,
     isAuthenticated: !!session?.token,
+    isHydrated,
+    isLoading: !isHydrated,
     user: session?.user ?? null,
     role: session?.role ?? null,
     signOut,

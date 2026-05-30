@@ -60,12 +60,20 @@ function applyResize(start: FieldPosition, handle: Handle, dx: number, dy: numbe
 interface PlacedFieldProps {
   field: DocumentField
   color: string
+  signerName: string
   selected: boolean
   onSelect: () => void
   onCommit: (next: FieldPosition) => void
 }
 
-export function PlacedField({ field, color, selected, onSelect, onCommit }: PlacedFieldProps) {
+export function PlacedField({
+  field,
+  color,
+  signerName,
+  selected,
+  onSelect,
+  onCommit,
+}: PlacedFieldProps) {
   const meta = fieldTypeMeta(field.type)
   const Icon = meta.icon
   const [draft, setDraft] = useState<FieldPosition | null>(null)
@@ -125,34 +133,61 @@ export function PlacedField({ field, color, selected, onSelect, onCommit }: Plac
       onPointerDown={(e) => startGesture(e, 'move')}
       onClick={(e) => e.stopPropagation()}
       className={cn(
-        'pointer-events-auto absolute flex select-none items-center gap-1 rounded-sm border-2 px-1 text-[10px] font-medium leading-none',
-        selected ? 'ring-2 ring-offset-1 ring-brand cursor-move' : 'cursor-pointer',
+        'pointer-events-auto group/field absolute select-none rounded-[3px] transition-shadow',
+        selected ? 'cursor-move' : 'cursor-pointer',
       )}
       style={{
         left: `${pos.x}%`,
         top: `${pos.y}%`,
         width: `${pos.width}%`,
         height: `${pos.height}%`,
-        borderColor: color,
-        backgroundColor: `color-mix(in oklch, ${color} 18%, transparent)`,
-        color,
+        border: selected ? '2px solid var(--color-brand)' : `1.5px dashed ${color}`,
+        background: `color-mix(in oklch, ${color} 14%, var(--color-surface))`,
+        boxShadow: selected ? 'var(--shadow-focus)' : undefined,
       }}
     >
-      <Icon className="h-3 w-3 shrink-0" />
-      <span className="truncate">{meta.label}</span>
+      {/* Colored top tag showing signer name (visible on hover or when selected) */}
+      <span
+        className={cn(
+          'pointer-events-none absolute -top-[1px] left-0 flex max-w-full -translate-y-full items-center gap-1 rounded-t-[3px] px-1.5 py-[3px] font-mono text-[9.5px] font-semibold uppercase leading-none tracking-tight text-white shadow-[var(--shadow-1)]',
+          selected ? 'opacity-100' : 'opacity-0 transition-opacity group-hover/field:opacity-100',
+        )}
+        style={{ backgroundColor: color }}
+      >
+        <Icon className="size-2.5 shrink-0" strokeWidth={1.5} />
+        <span className="truncate">{signerName}</span>
+      </span>
 
+      {/* Body: icon + label */}
+      <div
+        className="flex h-full items-center gap-1 overflow-hidden px-1.5 text-[10px] font-medium leading-none"
+        style={{ color }}
+      >
+        <Icon className="size-3 shrink-0" strokeWidth={1.5} />
+        <span className="truncate">{field.label ?? meta.label}</span>
+      </div>
+
+      {/* Resize handles (only when selected) */}
       {selected &&
         HANDLES.map((h) => (
           <span
             key={h}
             onPointerDown={(e) => startGesture(e, h)}
             className={cn(
-              'absolute h-2 w-2 rounded-xs border bg-surface-raised',
+              'absolute h-2 w-2 rounded-[2px] border-[1.5px] border-surface',
               HANDLE_POSITIONS[h],
             )}
-            style={{ borderColor: color, cursor: HANDLE_CURSORS[h] }}
+            style={{ backgroundColor: 'var(--color-brand)', cursor: HANDLE_CURSORS[h] }}
           />
         ))}
+
+      {/* Permanent small SE handle when not selected (matches design's resize dot) */}
+      {!selected && (
+        <span
+          className="pointer-events-none absolute -bottom-[3px] -right-[3px] size-2 rounded-[2px] border-[1.5px] border-surface opacity-70"
+          style={{ backgroundColor: color }}
+        />
+      )}
     </div>
   )
 }

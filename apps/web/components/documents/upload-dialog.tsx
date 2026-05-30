@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Upload, Loader2 } from 'lucide-react'
+import { UploadCloud, Loader2, Info, ArrowRight } from 'lucide-react'
 import {
   Button,
   Dialog,
@@ -65,20 +65,29 @@ export function UploadDialog({ trigger }: { trigger: React.ReactNode }) {
             if (file) handleFile(file)
           }}
           className={cn(
-            'flex h-[200px] cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-border bg-surface px-6 py-8 text-center transition-colors',
-            'hover:border-border-strong hover:bg-surface-hover',
-            dragOver && 'border-brand bg-brand-soft/40',
+            'flex h-[200px] cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-[1.5px] border-dashed border-border-strong bg-surface px-6 py-8 text-center transition-colors',
+            'hover:border-brand hover:bg-brand-soft/30',
+            dragOver && 'border-brand bg-brand-soft/50',
+            upload.isPending && 'pointer-events-none opacity-80',
           )}
         >
-          {upload.isPending ? (
-            <Loader2 className="size-7 animate-spin text-brand" />
-          ) : (
-            <Upload className="size-7 text-ink-faint" />
-          )}
+          <span
+            aria-hidden
+            className="grid size-11 place-items-center rounded-full bg-brand-soft text-brand-strong"
+          >
+            {upload.isPending ? (
+              <Loader2 className="size-[22px] animate-spin" strokeWidth={1.5} />
+            ) : (
+              <UploadCloud className="size-[22px]" strokeWidth={1.5} />
+            )}
+          </span>
           <div className="text-sm font-medium text-ink">
             {upload.isPending ? 'Uploading…' : 'Drag and drop your PDF here'}
           </div>
-          <div className="text-xs text-ink-subtle">or click to browse files</div>
+          <div className="text-[13px] text-ink-muted">
+            or{' '}
+            <span className="font-medium text-brand-strong">click to browse files</span>
+          </div>
           <input
             ref={inputRef}
             type="file"
@@ -91,13 +100,22 @@ export function UploadDialog({ trigger }: { trigger: React.ReactNode }) {
           />
         </label>
 
-        <p className="text-xs text-ink-subtle">
+        <p className="inline-flex items-center gap-1.5 text-xs text-ink-subtle">
+          <Info className="size-3.5" strokeWidth={1.5} />
           Maximum file size 25 MB. Only PDF files are supported.
         </p>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)} disabled={upload.isPending}>
+          <Button
+            variant="ghost"
+            onClick={() => setOpen(false)}
+            disabled={upload.isPending}
+          >
             Cancel
+          </Button>
+          <Button disabled className="gap-2">
+            Upload
+            <ArrowRight className="size-4" strokeWidth={1.5} />
           </Button>
         </DialogFooter>
       </DialogContent>

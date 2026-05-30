@@ -7,12 +7,22 @@ import { useAuth } from '../../lib/auth/use-auth'
 
 export function AuthGuard({ children }: { children: ReactNode }) {
   const router = useRouter()
-  const { isAuthenticated, session } = useAuth()
+  const { isAuthenticated, isHydrated } = useAuth()
 
   useEffect(() => {
-    if (session !== null) return
+    if (!isHydrated) return
     if (!isAuthenticated) router.replace('/login')
-  }, [isAuthenticated, session, router])
+  }, [isAuthenticated, isHydrated, router])
+
+  if (!isHydrated) {
+    return (
+      <div
+        className="flex h-screen items-center justify-center bg-paper text-sm text-ink-subtle"
+        aria-busy="true"
+        aria-live="polite"
+      />
+    )
+  }
 
   if (!isAuthenticated) {
     return (

@@ -20,6 +20,11 @@ function getServerToken(): string | null {
   return null
 }
 
+// Module-level cache of paths that have been fatally rejected by BE
+// (e.g. 401 because Phase G is not deployed). Prevents retry storms across
+// remounts and across multiple components subscribing to the same path.
+const disabledPaths = new Set<string>()
+
 export function useDocumentStream(
   options: UseDocumentStreamOptions = {},
 ): UseDocumentStreamResult {
@@ -39,6 +44,11 @@ export function useDocumentStream(
     if (!enabled || !token) return
 
     const path = documentId ? `/documents/${documentId}/stream` : '/documents/stream'
+    if (disabledPaths.has(path)) {
+      setState('disabled')
+      return
+    }
+
     const stream = new DocumentStream({
       path,
       token,
@@ -46,6 +56,9 @@ export function useDocumentStream(
       onEvent: (event) => {
         setLastEvent(event)
         onEventRef.current?.(event)
+      },
+      onFatal: () => {
+        disabledPaths.add(path)
       },
     })
 

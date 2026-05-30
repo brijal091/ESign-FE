@@ -5,7 +5,7 @@ import { statusLabel, statusVariant } from '../../lib/document-status'
 export function StatusBadge({ status }: { status: DocumentStatus }) {
   const variant = statusVariant(status)
   return (
-    <Badge variant={variant}>
+    <Badge variant={variant} className="gap-1.5 px-2.5 py-0.5 leading-snug">
       <StatusDot tone={variant} size="sm" />
       {statusLabel(status)}
     </Badge>

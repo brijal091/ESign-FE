@@ -18,26 +18,31 @@ function initials(name: string): string {
     .join('')
 }
 
-export function SignerChips({ signers }: { signers: Signer[] }) {
+/**
+ * Avatar stack — solid colored circle per signer, white outer ring,
+ * negative margin overlap. Matches the Paraph design.
+ */
+export function SignerChips({ signers, max = 3 }: { signers: Signer[]; max?: number }) {
   if (signers.length === 0) {
     return <span className="text-xs text-ink-subtle">No signers</span>
   }
 
-  const visible = signers.slice(0, 3)
+  const visible = signers.slice(0, max)
   const extra = signers.length - visible.length
 
   return (
-    <div className="flex items-center -space-x-1.5">
+    <div className="flex items-center">
       {visible.map((s, i) => {
         const color = s.color ?? SIGNER_FALLBACKS[i % SIGNER_FALLBACKS.length]
         return (
           <span
             key={s.id}
-            title={s.name}
-            className="grid size-7 place-items-center rounded-full border-2 border-paper bg-surface text-[10px] font-semibold leading-none text-ink shadow-[var(--shadow-1)]"
+            title={`${s.name} · ${s.email}`}
+            className="relative grid size-7 place-items-center rounded-full text-[10px] font-semibold text-ink-inverse ring-2 ring-paper"
             style={{
-              boxShadow: `inset 0 0 0 1.5px ${color}`,
-              color,
+              backgroundColor: color,
+              marginLeft: i === 0 ? 0 : -8,
+              zIndex: visible.length - i,
             }}
           >
             {initials(s.name)}
@@ -45,7 +50,10 @@ export function SignerChips({ signers }: { signers: Signer[] }) {
         )
       })}
       {extra > 0 ? (
-        <span className="grid size-7 place-items-center rounded-full border-2 border-paper bg-surface-sunken text-[10px] font-medium text-ink-subtle">
+        <span
+          className="relative grid size-7 place-items-center rounded-full bg-surface-sunken text-[10px] font-semibold text-ink-muted ring-2 ring-paper"
+          style={{ marginLeft: -8 }}
+        >
           +{extra}
         </span>
       ) : null}

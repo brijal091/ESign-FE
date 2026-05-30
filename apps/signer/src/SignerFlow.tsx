@@ -3,23 +3,32 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 import {
+  AlignLeft,
   ArrowRight,
   ArrowUp,
+  Building2,
+  Calendar,
+  CaseSensitive,
   Check,
   CheckCircle2,
   CircleCheck,
+  CircleDot,
   CircleX,
   Clock,
   Download,
+  List,
   Loader2,
+  Lock,
   Mail,
-  PenLine,
+  PenTool,
+  Phone,
   Scroll,
   ShieldCheck,
-  Lock,
+  SquareCheck,
+  Strikethrough,
+  TextCursorInput,
   TriangleAlert,
-  Calendar,
-  Type as TypeIcon,
+  User,
 } from 'lucide-react'
 import { toast } from '@esign/ui'
 import { SignatureModal } from './components/signature/SignatureModal'
@@ -33,6 +42,12 @@ import {
   Checkbox,
   FileSignature,
 } from './components/signer/atoms'
+import {
+  DateEditor,
+  InlineTextEditor,
+  MultilineEditor,
+  SelectionEditor,
+} from './components/signer/field-popovers'
 import { signingApi, getToken, SigningApiError, type SignerField, type SigningDocument } from './lib/api'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
@@ -58,6 +73,7 @@ export function SignerFlow() {
   const [consented, setConsented] = useState(false)
   const [busy, setBusy] = useState(false)
   const [signatureFieldId, setSignatureFieldId] = useState<string | null>(null)
+  const [activeFieldId, setActiveFieldId] = useState<string | null>(null)
   const [showDecline, setShowDecline] = useState(false)
   const [numPages, setNumPages] = useState(0)
 
@@ -105,16 +121,30 @@ export function SignerFlow() {
   )
 
   async function handleFieldTap(f: SignerField) {
+    // 1. Instant-action types — no popover needed.
     if (SIGNATURE_TYPES.has(f.type)) {
       setSignatureFieldId(f.id)
       return
     }
-    if (f.type === 'name' && doc) return submitField(f.id, doc.currentSigner.name)
-    if (f.type === 'email' && doc) return submitField(f.id, doc.currentSigner.email)
-    if (f.type === 'date') return submitField(f.id, new Date().toISOString().slice(0, 10))
-    if (f.type === 'checkbox') return submitField(f.id, isFilled(f) ? '' : 'true')
-    const entered = window.prompt(f.label ?? 'Enter value', f.filledValue ?? '')
-    if (entered != null) submitField(f.id, entered)
+    if (f.type === 'name' && doc && !isFilled(f)) {
+      return submitField(f.id, doc.currentSigner.name)
+    }
+    if (f.type === 'checkbox' || f.type === 'radio' || f.type === 'strikethrough') {
+      return submitField(f.id, isFilled(f) ? '' : 'true')
+    }
+
+    // 2. Editor types — open inline popover anchored to the field.
+    setActiveFieldId(f.id)
+  }
+
+  function closeActiveEditor() {
+    setActiveFieldId(null)
+  }
+
+  async function commitActiveEditor(value: string) {
+    const id = activeFieldId
+    setActiveFieldId(null)
+    if (id) await submitField(id, value)
   }
 
   async function continueFromWelcome() {
@@ -388,7 +418,11 @@ export function SignerFlow() {
                 key={pageNumber}
                 pageNumber={pageNumber}
                 fields={fields.filter((f) => f.page === pageNumber)}
+                activeFieldId={activeFieldId}
+                signerEmail={doc?.currentSigner.email ?? ''}
                 onFieldTap={handleFieldTap}
+                onCommit={commitActiveEditor}
+                onCancel={closeActiveEditor}
               />
             ))}
           </Document>
@@ -439,73 +473,159 @@ export function SignerFlow() {
 function PdfPageWithFields({
   pageNumber,
   fields,
+  activeFieldId,
+  signerEmail,
   onFieldTap,
+  onCommit,
+  onCancel,
 }: {
   pageNumber: number
   fields: SignerField[]
+  activeFieldId: string | null
+  signerEmail: string
   onFieldTap: (f: SignerField) => void
+  onCommit: (value: string) => void
+  onCancel: () => void
 }) {
   return (
     <div className="relative shadow-[var(--shadow-1)]" style={{ width: PAGE_WIDTH }}>
       <Page pageNumber={pageNumber} width={PAGE_WIDTH} renderAnnotationLayer={false} renderTextLayer={false} />
       <div className="absolute inset-0">
         {fields.map((f) => (
-          <FieldOverlay key={f.id} field={f} onClick={() => onFieldTap(f)} />
+          <FieldOverlay
+            key={f.id}
+            field={f}
+            active={f.id === activeFieldId}
+            signerEmail={signerEmail}
+            onClick={() => onFieldTap(f)}
+            onCommit={onCommit}
+            onCancel={onCancel}
+          />
         ))}
       </div>
     </div>
   )
 }
 
-const FIELD_ICON: Record<string, typeof PenLine> = {
-  signature: PenLine,
-  initials: PenLine,
-  name: TypeIcon,
-  email: TypeIcon,
+export const FIELD_ICON: Record<string, typeof Calendar> = {
+  signature: PenTool,
+  initials: CaseSensitive,
+  name: User,
+  email: Mail,
+  phone: Phone,
+  company: Building2,
+  text: TextCursorInput,
+  multiline_text: AlignLeft,
+  checkbox: SquareCheck,
+  radio: CircleDot,
+  selection: List,
   date: Calendar,
+  strikethrough: Strikethrough,
 }
 
-function FieldOverlay({ field, onClick }: { field: SignerField; onClick: () => void }) {
+const INLINE_INPUT_TYPES = new Set(['text', 'email', 'phone', 'company', 'name'])
+
+function FieldOverlay({
+  field,
+  active,
+  signerEmail,
+  onClick,
+  onCommit,
+  onCancel,
+}: {
+  field: SignerField
+  active: boolean
+  signerEmail: string
+  onClick: () => void
+  onCommit: (value: string) => void
+  onCancel: () => void
+}) {
   const filled = field.filledValue != null && field.filledValue !== ''
-  const Icon = FIELD_ICON[field.type] ?? PenLine
+  const Icon = FIELD_ICON[field.type] ?? TextCursorInput
   const isImage = field.filledValue?.startsWith('data:image')
 
+  // ---------- Active editor states ----------
+  if (active && INLINE_INPUT_TYPES.has(field.type)) {
+    return (
+      <div
+        className="absolute"
+        style={{
+          left: `${field.x}%`,
+          top: `${field.y}%`,
+          width: `${field.width}%`,
+          height: `${field.height}%`,
+        }}
+      >
+        <InlineTextEditor
+          field={field}
+          defaultValue={field.type === 'email' ? signerEmail : undefined}
+          onCommit={onCommit}
+          onCancel={onCancel}
+        />
+      </div>
+    )
+  }
+
+  // For popover types we still render the (now "active") button as the anchor,
+  // and float the popover from it.
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="absolute flex items-center gap-1 overflow-hidden rounded-xs px-1 text-[10px] font-medium"
+    <div
+      className="absolute"
       style={{
         left: `${field.x}%`,
         top: `${field.y}%`,
         width: `${field.width}%`,
         height: `${field.height}%`,
-        border: filled ? '1.5px solid var(--color-success)' : '1.5px dashed var(--color-brand)',
-        background: filled
-          ? 'var(--color-success-soft)'
-          : 'color-mix(in oklch, var(--color-brand) 8%, var(--color-surface))',
-        boxShadow:
-          !filled && field.required ? '0 0 0 3px oklch(0.665 0.155 38 / 0.18)' : 'none',
-        color: filled ? 'var(--color-success-strong)' : 'var(--color-brand-strong)',
       }}
     >
-      {filled ? (
-        isImage ? (
-          <img src={field.filledValue!} alt="signature" className="h-full w-full object-contain" />
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex h-full w-full items-center gap-1 overflow-hidden rounded-xs px-1 text-[10px] font-medium"
+        style={{
+          border: filled
+            ? '1.5px solid var(--color-success)'
+            : active
+              ? '2px solid var(--color-brand)'
+              : '1.5px dashed var(--color-brand)',
+          background: filled
+            ? 'var(--color-success-soft)'
+            : active
+              ? 'var(--color-brand-soft)'
+              : 'color-mix(in oklch, var(--color-brand) 8%, var(--color-surface))',
+          boxShadow:
+            (!filled && field.required) || active ? '0 0 0 3px oklch(0.665 0.155 38 / 0.22)' : 'none',
+          color: filled ? 'var(--color-success-strong)' : 'var(--color-brand-strong)',
+        }}
+      >
+        {filled ? (
+          isImage ? (
+            <img src={field.filledValue!} alt="signature" className="h-full w-full object-contain" />
+          ) : (
+            <>
+              <CircleCheck className="size-3 shrink-0" />
+              <span className="truncate">{field.filledValue}</span>
+            </>
+          )
         ) : (
           <>
-            <CircleCheck className="size-3 shrink-0" />
-            <span className="truncate">{field.filledValue}</span>
+            <Icon className="size-3 shrink-0" />
+            <span className="flex-1 truncate text-left">{field.label ?? field.type}</span>
+            {field.required ? <span className="font-mono text-[8px] font-bold">REQ</span> : null}
           </>
-        )
-      ) : (
-        <>
-          <Icon className="size-3 shrink-0" />
-          <span className="flex-1 truncate text-left">{field.label ?? field.type}</span>
-          {field.required ? <span className="font-mono text-[8px] font-bold">REQ</span> : null}
-        </>
-      )}
-    </button>
+        )}
+      </button>
+
+      {active && field.type === 'multiline_text' ? (
+        <MultilineEditor field={field} onCommit={onCommit} onCancel={onCancel} />
+      ) : null}
+      {active && field.type === 'date' ? (
+        <DateEditor field={field} onCommit={onCommit} onCancel={onCancel} />
+      ) : null}
+      {active && field.type === 'selection' ? (
+        <SelectionEditor field={field} onCommit={onCommit} onCancel={onCancel} />
+      ) : null}
+    </div>
   )
 }
 

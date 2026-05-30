@@ -21,11 +21,14 @@ const KEYS = {
   pending: (limit: number) => ['dashboard', 'pending', limit] as const,
 }
 
+// Dashboard fetches fail silently — KpiCard "—" already conveys the empty state,
+// and a transient BE error should not spam retries or surface a toast.
 export function useDashboardSummary() {
   return useQuery({
     queryKey: KEYS.summary,
     queryFn: fetchDashboardSummary,
     staleTime: STALE,
+    retry: false,
   })
 }
 
@@ -35,6 +38,7 @@ export function useDashboardActivity(from: string, to: string, granularity: Acti
     queryKey: KEYS.activity(range),
     queryFn: () => fetchDashboardActivity(range),
     staleTime: STALE,
+    retry: false,
   })
 }
 
@@ -43,6 +47,7 @@ export function useTopSigners(limit = 5) {
     queryKey: KEYS.topSigners(limit),
     queryFn: () => fetchTopSigners(limit),
     staleTime: STALE,
+    retry: false,
   })
 }
 
@@ -51,6 +56,7 @@ export function useCompletionTime() {
     queryKey: KEYS.completionTime,
     queryFn: fetchCompletionTime,
     staleTime: STALE,
+    retry: false,
   })
 }
 
@@ -59,5 +65,6 @@ export function usePendingDocs(limit = 10) {
     queryKey: KEYS.pending(limit),
     queryFn: () => fetchPendingDocs(limit),
     staleTime: STALE,
+    retry: false,
   })
 }

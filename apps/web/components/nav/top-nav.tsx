@@ -1,9 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ChevronDown } from 'lucide-react'
-import { cn } from '@esign/ui'
+import { usePathname, useRouter } from 'next/navigation'
+import { ChevronDown, LogOut } from 'lucide-react'
+import {
+  cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@esign/ui'
+import { useAuth } from '@/lib/auth/use-auth'
 
 const TABS = [
   { label: 'Documents', href: '/documents', match: '/documents' },
@@ -15,6 +23,14 @@ const TABS = [
 
 export function TopNav() {
   const pathname = usePathname() ?? ''
+  const router = useRouter()
+  const { signOut } = useAuth()
+
+  const handleSignOut = () => {
+    signOut()
+    router.push('/login')
+  }
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-6 border-b border-border bg-paper/85 px-6 backdrop-blur-md">
       <Link href="/documents" className="flex items-center gap-2.5">
@@ -47,19 +63,33 @@ export function TopNav() {
       </nav>
 
       <div className="ml-auto flex items-center gap-3">
-        <button
-          type="button"
-          className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-ink-muted hover:bg-surface-hover hover:text-ink"
-        >
-          <span
-            aria-hidden
-            className="grid size-6 place-items-center rounded-full bg-brand-soft text-[10px] font-semibold text-brand-strong"
-          >
-            MC
-          </span>
-          <span>My Company</span>
-          <ChevronDown className="size-3.5" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-ink-muted hover:bg-surface-hover hover:text-ink"
+            >
+              <span
+                aria-hidden
+                className="grid size-6 place-items-center rounded-full bg-brand-soft text-[10px] font-semibold text-brand-strong"
+              >
+                MC
+              </span>
+              <span>My Company</span>
+              <ChevronDown className="size-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-[12rem]">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={handleSignOut}
+              className="gap-2 text-sm text-danger-strong focus:text-danger-strong"
+            >
+              <LogOut className="size-4" strokeWidth={1.5} />
+              <span>Sign out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   )

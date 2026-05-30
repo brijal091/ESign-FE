@@ -3,3 +3,10 @@
 @import "@esign/ui/globals.css";
 
 @source "../../../packages/ui/src";
+
+/* Global Lucide icon stroke (Paraph design system: 1.5). Components that need a
+   bolder stroke (e.g. success checks, stepper numerals) must pass `strokeWidth`
+   inline as a style — SVG attribute props are overridden by this rule. */
+.lucide {
+  stroke-width: 1.5;
+}

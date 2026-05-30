@@ -68,7 +68,7 @@ export function UploadTemplateDialog({ trigger }: { trigger: React.ReactNode }) 
       toast.success(`Template "${t.name}" created`)
       setOpen(false)
       reset()
-      router.push(`/templates/${t.id}`)
+      router.push(`/templates/${t.id}/edit`)
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Upload failed')
     }

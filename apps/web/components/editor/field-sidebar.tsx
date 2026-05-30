@@ -1,17 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronDown, FileText, Trash2, UserPlus } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-  ScrollArea,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  cn,
-} from '@esign/ui'
+  ChevronDown,
+  ChevronRight,
+  Pencil,
+  TriangleAlert,
+  UserPlus,
+  X,
+} from 'lucide-react'
+import { ScrollArea, Tooltip, TooltipTrigger, TooltipContent, cn } from '@esign/ui'
 import type { Document, Signer } from '@esign/types'
 import { FIELD_TYPES } from '../../lib/field-types'
 import { DraggableField } from './draggable-field'
@@ -35,11 +33,40 @@ interface FieldSidebarProps {
   onDeleteSigner: (id: string) => void
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionHeader({
+  title,
+  count,
+  expanded,
+  onToggle,
+  action,
+}: {
+  title: string
+  count?: number
+  expanded: boolean
+  onToggle: () => void
+  action?: React.ReactNode
+}) {
   return (
-    <div className="px-4 pb-2 pt-4 text-xs font-semibold uppercase tracking-wide text-ink-subtle">
-      {children}
-    </div>
+    <header className="flex items-center justify-between px-4 pb-2 pt-3">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.05em] text-ink-subtle"
+      >
+        {expanded ? (
+          <ChevronDown className="size-3.5 text-ink-subtle" strokeWidth={1.5} />
+        ) : (
+          <ChevronRight className="size-3.5 text-ink-subtle" strokeWidth={1.5} />
+        )}
+        <span>{title}</span>
+        {count !== undefined && (
+          <span className="ml-1 rounded-full bg-surface-sunken px-1.5 py-0.5 text-[10px] font-semibold text-ink-muted">
+            {count}
+          </span>
+        )}
+      </button>
+      {action}
+    </header>
   )
 }
 
@@ -51,53 +78,158 @@ export function FieldSidebar({
   onUpdateSigner,
   onDeleteSigner,
 }: FieldSidebarProps) {
+  const [docOpen, setDocOpen] = useState(true)
+  const [recipientsOpen, setRecipientsOpen] = useState(true)
+
+  const selectedSigner = useMemo(
+    () => doc.signers.find((s) => s.id === selectedSignerId) ?? null,
+    [doc.signers, selectedSignerId],
+  )
+  const selectedSignerColor =
+    selectedSigner?.color ??
+    SIGNER_COLORS[(doc.signers.findIndex((s) => s.id === selectedSignerId) + SIGNER_COLORS.length) % SIGNER_COLORS.length]
+
+  const fieldCountBySigner = useMemo(() => {
+    const m = new Map<string | null, number>()
+    for (const f of doc.fields) m.set(f.signerId, (m.get(f.signerId) ?? 0) + 1)
+    return m
+  }, [doc.fields])
+
   return (
-    <aside className="flex w-80 shrink-0 flex-col border-r border-border bg-surface">
-      {/* Document section */}
-      <SectionLabel>Document</SectionLabel>
-      <div className="mx-3 mb-2 flex items-center gap-2.5 rounded-sm border border-border bg-surface-raised px-3 py-2.5">
-        <span className="grid size-8 shrink-0 place-items-center rounded-sm bg-danger-soft text-danger-strong">
-          <FileText className="size-4" />
-        </span>
-        <div className="min-w-0">
-          <div className="truncate text-sm font-medium text-ink">{doc.title}</div>
-          <div className="text-xs text-ink-subtle">PDF document</div>
-        </div>
-      </div>
+    <aside className="flex h-full min-h-0 w-80 shrink-0 flex-col border-r border-border bg-surface">
+      <ScrollArea className="min-h-0 flex-1">
+        {/* ───── Document ───── */}
+        <section className="border-b border-border-subtle pb-3">
+          <SectionHeader
+            title="Document"
+            count={1}
+            expanded={docOpen}
+            onToggle={() => setDocOpen((v) => !v)}
+          />
+          {docOpen && (
+            <div className="px-3">
+              <div className="flex items-center gap-2.5 rounded-sm border border-border-subtle bg-surface-raised px-2.5 py-2">
+                <PdfThumb />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-[13px] font-medium text-ink">{doc.title}</div>
+                  <div className="mt-0.5 text-[11.5px] text-ink-subtle">PDF document</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
 
-      <div className="h-px bg-border-subtle" />
+        {/* ───── Recipients ───── */}
+        <section className="border-b border-border-subtle pb-3">
+          <SectionHeader
+            title="Recipients"
+            count={doc.signers.length}
+            expanded={recipientsOpen}
+            onToggle={() => setRecipientsOpen((v) => !v)}
+            action={
+              doc.signers.length >= MAX_SIGNERS ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      disabled
+                      aria-label="Add signer"
+                      className="grid size-[22px] place-items-center rounded text-ink-faint opacity-50"
+                    >
+                      <UserPlus className="size-3.5" strokeWidth={1.5} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Maximum {MAX_SIGNERS} signers in v1</TooltipContent>
+                </Tooltip>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onAddSigner}
+                  aria-label="Add signer"
+                  className="grid size-[22px] place-items-center rounded text-ink-subtle transition-colors hover:bg-surface-hover hover:text-ink"
+                >
+                  <UserPlus className="size-3.5" strokeWidth={1.5} />
+                </button>
+              )
+            }
+          />
+          {recipientsOpen && (
+            <div className="px-3">
+              <div className="flex flex-col gap-1.5">
+                {doc.signers.map((signer, i) => (
+                  <SignerRow
+                    key={signer.id}
+                    signer={signer}
+                    color={signer.color ?? SIGNER_COLORS[i % SIGNER_COLORS.length]}
+                    isSelected={signer.id === selectedSignerId}
+                    canDelete={doc.signers.length > 1}
+                    fieldCount={fieldCountBySigner.get(signer.id) ?? 0}
+                    onSelect={() => onSelectSigner(signer.id)}
+                    onChangeName={(name) => onUpdateSigner(signer.id, { name })}
+                    onChangeEmail={(email) => onUpdateSigner(signer.id, { email })}
+                    onDelete={() => onDeleteSigner(signer.id)}
+                  />
+                ))}
+              </div>
 
-      {/* Recipients section */}
-      <SectionLabel>Recipients</SectionLabel>
-      <ScrollArea className="flex-1">
-        <div className="flex flex-col gap-1.5 px-3 pb-3">
-          {doc.signers.map((signer, i) => (
-            <SignerSection
-              key={signer.id}
-              signer={signer}
-              colorFallback={SIGNER_COLORS[i % SIGNER_COLORS.length]}
-              isSelected={signer.id === selectedSignerId}
-              canDelete={doc.signers.length > 1}
-              onSelect={() => onSelectSigner(signer.id)}
-              onChangeName={(name) => onUpdateSigner(signer.id, { name })}
-              onChangeEmail={(email) => onUpdateSigner(signer.id, { email })}
-              onDelete={() => onDeleteSigner(signer.id)}
-            />
-          ))}
-        </div>
+              {/* Warning for unassigned signer */}
+              {selectedSigner && (fieldCountBySigner.get(selectedSigner.id) ?? 0) === 0 && (
+                <div className="mt-2 flex items-start gap-1.5 rounded-sm border border-warning/40 bg-warning-soft px-2.5 py-2 text-[11.5px] leading-snug text-warning-strong">
+                  <TriangleAlert className="mt-px size-3.5 shrink-0" strokeWidth={1.5} />
+                  <span>Drag a field type onto the PDF to assign it to {selectedSigner.name}.</span>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* ───── Field types palette ───── */}
+        <section className="pb-3">
+          <header className="flex items-center justify-between px-4 pb-2 pt-3">
+            <div className="flex items-baseline gap-2">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.05em] text-ink-subtle">
+                Field types
+              </span>
+              <span className="text-[10px] font-semibold text-ink-faint">
+                {FIELD_TYPES.length}
+              </span>
+            </div>
+            {selectedSigner && (
+              <span className="flex items-center gap-1 text-[10px] text-ink-faint">
+                <span>Drag onto</span>
+                <span
+                  className="inline-block size-2 rounded-full"
+                  style={{ backgroundColor: selectedSignerColor }}
+                />
+                <span className="max-w-[110px] truncate font-medium text-ink-muted">
+                  {selectedSigner.name}
+                </span>
+              </span>
+            )}
+          </header>
+          <div className="grid grid-cols-2 gap-1.5 px-3">
+            {FIELD_TYPES.map((meta) => (
+              <DraggableField
+                key={meta.type}
+                type={meta.type}
+                signerId={selectedSignerId}
+                color={selectedSignerColor}
+                disabled={selectedSignerId == null}
+              />
+            ))}
+          </div>
+        </section>
       </ScrollArea>
 
-      <div className="h-px bg-border-subtle" />
-
-      <div className="p-3">
+      <div className="z-10 mt-auto shrink-0 border-t border-border-subtle bg-surface-raised p-3">
         {doc.signers.length >= MAX_SIGNERS ? (
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 disabled
-                className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border px-3 py-2 text-xs text-ink-faint opacity-60"
+                className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border px-3 py-1.5 text-xs text-ink-faint opacity-60"
               >
-                <UserPlus className="size-3.5" />
+                <UserPlus className="size-3.5" strokeWidth={1.5} />
                 Add signer
               </button>
             </TooltipTrigger>
@@ -107,9 +239,9 @@ export function FieldSidebar({
           <button
             type="button"
             onClick={onAddSigner}
-            className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border px-3 py-2 text-xs font-medium text-brand-strong transition-colors hover:bg-brand-soft/50"
+            className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border bg-surface px-3 py-1.5 text-xs font-medium text-ink-muted transition-colors hover:border-brand hover:bg-brand-soft/40 hover:text-brand-strong"
           >
-            <UserPlus className="size-3.5" />
+            <UserPlus className="size-3.5" strokeWidth={1.5} />
             Add signer
           </button>
         )}
@@ -118,106 +250,145 @@ export function FieldSidebar({
   )
 }
 
-interface SignerSectionProps {
+/* ───────────────────────────────────────────────────────────────────────────
+   PdfThumb — small page-shaped chip with a folded corner and brand accent.
+   ─────────────────────────────────────────────────────────────────────── */
+function PdfThumb() {
+  return (
+    <div className="relative grid size-9 shrink-0 place-items-end overflow-hidden rounded-[3px] border border-border-strong bg-surface-raised">
+      {/* paper rules */}
+      <div className="absolute inset-x-1 top-1.5 flex flex-col gap-1">
+        <span className="h-px bg-border-subtle" />
+        <span className="h-px w-3/4 bg-border-subtle" />
+        <span className="h-px w-1/2 bg-border-subtle" />
+      </div>
+      {/* corner fold */}
+      <span
+        className="absolute right-0 top-0 size-2.5 bg-surface-sunken"
+        style={{ clipPath: 'polygon(0 0, 100% 100%, 100% 0)' }}
+      />
+      {/* PDF label */}
+      <span className="mb-0.5 mr-0.5 rounded-[2px] bg-danger px-1 font-mono text-[8px] font-semibold leading-none tracking-tight text-white">
+        PDF
+      </span>
+    </div>
+  )
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   SignerRow — collapsed: colored dot · name · count · X
+                edit:     name + email inputs
+   ─────────────────────────────────────────────────────────────────────── */
+interface SignerRowProps {
   signer: Signer
-  colorFallback: string
+  color: string
   isSelected: boolean
   canDelete: boolean
+  fieldCount: number
   onSelect: () => void
   onChangeName: (name: string) => void
   onChangeEmail: (email: string) => void
   onDelete: () => void
 }
 
-function SignerSection({
+function SignerRow({
   signer,
-  colorFallback,
+  color,
   isSelected,
   canDelete,
+  fieldCount,
   onSelect,
   onChangeName,
   onChangeEmail,
   onDelete,
-}: SignerSectionProps) {
-  const [open, setOpen] = useState(true)
+}: SignerRowProps) {
   const [editing, setEditing] = useState(false)
-  const color = signer.color ?? colorFallback
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <div
-        className={cn(
-          'overflow-hidden rounded-md border bg-surface-raised transition-colors',
-          isSelected ? 'border-transparent' : 'border-border',
-        )}
-        style={isSelected ? { boxShadow: `inset 3px 0 0 0 ${color}` } : undefined}
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-sm border bg-surface transition-colors',
+        isSelected ? 'border-brand bg-brand-soft/50' : 'border-border-subtle hover:bg-surface-hover',
+      )}
+    >
+      {isSelected && (
+        <span
+          className="pointer-events-none absolute inset-y-0 left-0 w-[2px]"
+          style={{ backgroundColor: 'var(--color-brand)' }}
+        />
+      )}
+      <button
+        type="button"
+        onClick={() => {
+          onSelect()
+        }}
+        className="flex w-full items-center gap-2.5 px-2.5 py-2 pl-3 text-left"
       >
-        <div
-          className={cn(
-            'flex items-center gap-2 px-2.5 py-2',
-            isSelected && 'bg-surface-hover/60',
-          )}
-        >
-          <CollapsibleTrigger className="rounded-xs p-0.5 text-ink-subtle hover:bg-surface-hover">
-            <ChevronDown
-              className={cn('size-3.5 transition-transform', !open && '-rotate-90')}
-            />
-          </CollapsibleTrigger>
-          <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
-          <button
-            type="button"
-            onClick={() => {
-              onSelect()
-              setEditing(true)
-            }}
-            className="flex-1 truncate text-left text-sm font-medium text-ink"
-          >
-            {signer.name}
-          </button>
-          {canDelete && (
-            <button
-              type="button"
-              onClick={onDelete}
-              className="rounded-xs p-1 text-ink-faint hover:bg-surface-hover hover:text-danger-strong"
-              aria-label="Remove signer"
-            >
-              <Trash2 className="size-3" />
-            </button>
+        <span
+          className="size-3 shrink-0 rounded-full ring-2 ring-surface"
+          style={{ backgroundColor: color, boxShadow: `0 0 0 1.5px ${color}` }}
+        />
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[13px] font-medium text-ink">{signer.name}</div>
+          {signer.email && (
+            <div className="mt-px truncate text-[11.5px] text-ink-subtle">{signer.email}</div>
           )}
         </div>
-
-        {editing && (
-          <div className="flex flex-col gap-1.5 px-2.5 pb-2.5">
-            <input
-              type="text"
-              value={signer.name}
-              onChange={(e) => onChangeName(e.target.value)}
-              onBlur={() => setEditing(false)}
-              autoFocus
-              className="rounded-sm border border-border bg-surface px-2 py-1 text-xs text-ink outline-none focus:border-brand"
-            />
-            <input
-              type="email"
-              value={signer.email}
-              onChange={(e) => onChangeEmail(e.target.value)}
-              className="rounded-sm border border-border bg-surface px-2 py-1 text-xs text-ink outline-none focus:border-brand"
-            />
-          </div>
+        {fieldCount > 0 && (
+          <span
+            className="rounded-full border bg-surface-raised px-1.5 py-px font-mono text-[10.5px] font-semibold"
+            style={{ color, borderColor: color }}
+          >
+            {fieldCount}
+          </span>
         )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            setEditing((v) => !v)
+          }}
+          aria-label="Edit signer"
+          className="grid size-[22px] shrink-0 place-items-center rounded text-ink-faint transition-colors hover:bg-surface-hover hover:text-ink"
+        >
+          <Pencil className="size-3" strokeWidth={1.5} />
+        </button>
+        {canDelete && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete()
+            }}
+            aria-label="Remove signer"
+            className="grid size-[22px] shrink-0 place-items-center rounded text-ink-faint transition-colors hover:bg-surface-hover hover:text-danger-strong"
+          >
+            <X className="size-3.5" strokeWidth={1.5} />
+          </button>
+        )}
+      </button>
 
-        <CollapsibleContent>
-          <div className="grid grid-cols-2 gap-1.5 px-2.5 pb-2.5" onPointerDown={onSelect}>
-            {FIELD_TYPES.map((meta) => (
-              <DraggableField
-                key={meta.type}
-                type={meta.type}
-                signerId={signer.id}
-                color={color}
-              />
-            ))}
-          </div>
-        </CollapsibleContent>
-      </div>
-    </Collapsible>
+      {editing && (
+        <div className="flex flex-col gap-1.5 px-2.5 pb-2.5">
+          <input
+            type="text"
+            value={signer.name}
+            onChange={(e) => onChangeName(e.target.value)}
+            onBlur={() => setEditing(false)}
+            autoFocus
+            placeholder="Name"
+            className="rounded-sm border border-border bg-surface px-2 py-1 text-xs text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+          />
+          <input
+            type="email"
+            value={signer.email}
+            onChange={(e) => onChangeEmail(e.target.value)}
+            placeholder="email@example.com"
+            className="rounded-sm border border-border bg-surface px-2 py-1 text-xs text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
+          />
+        </div>
+      )}
+    </div>
   )
 }
+

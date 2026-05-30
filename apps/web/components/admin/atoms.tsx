@@ -238,10 +238,12 @@ export function Select({ value, icon: Icon }: { value: string; icon?: LucideIcon
 export function Field({
   label,
   hint,
+  error,
   children,
 }: {
   label: string
   hint?: string
+  error?: string
   children: React.ReactNode
 }) {
   return (
@@ -251,6 +253,7 @@ export function Field({
         {hint ? <span className="text-xs text-ink-subtle">{hint}</span> : null}
       </div>
       {children}
+      {error ? <span className="text-xs text-danger">{error}</span> : null}
     </div>
   )
 }

@@ -27,11 +27,13 @@ export function FieldOverlay({
       {pageFields.map((field) => {
         const signer = signers.find((s) => s.id === field.signerId)
         const color = signer?.color ?? 'var(--color-signer-1)'
+        const signerName = signer?.name ?? 'Unassigned'
         return (
           <PlacedField
             key={field.id}
             field={field}
             color={color}
+            signerName={signerName}
             selected={field.id === selectedFieldId}
             onSelect={() => onSelect(field.id)}
             onCommit={(position) => onMoveField(field.id, position)}

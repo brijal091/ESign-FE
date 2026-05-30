@@ -28,7 +28,7 @@ export function OfflineBanner() {
       }}
     >
       <span className="grid size-6 shrink-0 place-items-center rounded-full bg-danger text-ink-inverse">
-        <WifiOff className="size-3" />
+        <WifiOff className="size-3" strokeWidth={1.5} />
       </span>
       <div className="flex flex-1 items-baseline gap-2">
         <span className="text-[13.5px] font-semibold text-danger-strong">You&apos;re offline.</span>
@@ -41,7 +41,7 @@ export function OfflineBanner() {
         title="Retry connection"
         className="grid size-[30px] place-items-center rounded-sm border border-border bg-surface text-ink-muted hover:bg-surface-hover"
       >
-        <RotateCw className="size-3.5" />
+        <RotateCw className="size-3.5" strokeWidth={1.5} />
       </button>
     </div>
   )

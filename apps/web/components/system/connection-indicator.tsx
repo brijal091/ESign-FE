@@ -7,6 +7,7 @@ const LABEL: Record<StreamState, string> = {
   connecting: 'Connecting…',
   reconnecting: 'Reconnecting…',
   closed: 'Offline',
+  disabled: 'Live updates unavailable',
 }
 
 const DOT_CLASS: Record<StreamState, string> = {
@@ -14,6 +15,7 @@ const DOT_CLASS: Record<StreamState, string> = {
   connecting: 'bg-amber-500',
   reconnecting: 'bg-amber-500 animate-pulse',
   closed: 'bg-zinc-400',
+  disabled: 'bg-zinc-300',
 }
 
 export function ConnectionIndicator({ state }: { state: StreamState }) {

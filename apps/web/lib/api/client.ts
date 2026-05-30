@@ -47,7 +47,9 @@ export async function apiFetch<T = unknown>(
     )
   }
 
-  if (response.status === 401) {
+  // Best-effort streaming endpoints (SSE) must never log the user out — they
+  // are enhancements and may legitimately 401 if the BE feature is not deployed.
+  if (response.status === 401 && !isStreamPath(path)) {
     writeSession(null)
   }
 
@@ -85,6 +87,10 @@ export async function apiFetch<T = unknown>(
   }
 
   return payload as T
+}
+
+function isStreamPath(path: string): boolean {
+  return /\/stream(\/?$|\?)/.test(path)
 }
 
 function extractMessage(payload: unknown): string | undefined {

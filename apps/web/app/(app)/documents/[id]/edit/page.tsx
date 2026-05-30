@@ -152,7 +152,7 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
           }}
         />
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex min-h-0 flex-1 overflow-hidden">
           <FieldSidebar
             doc={doc}
             selectedSignerId={selectedSignerId}

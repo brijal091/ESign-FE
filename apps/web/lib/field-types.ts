@@ -1,7 +1,8 @@
 import type { FieldType } from '@esign/types'
 import {
-  PenLine,
-  Type,
+  PenTool,
+  CaseSensitive,
+  TextCursorInput,
   User,
   Mail,
   Phone,
@@ -9,7 +10,7 @@ import {
   AlignLeft,
   SquareCheck,
   CircleDot,
-  ChevronDown,
+  List,
   Calendar,
   Strikethrough,
   type LucideIcon,
@@ -22,14 +23,17 @@ export interface FieldTypeMeta {
   defaultSize: { width: number; height: number } // percent of page
 }
 
+// Default Lucide stroke width per Paraph design (paraph.css: `[data-lucide] { stroke-width: 1.5 }`)
+export const FIELD_ICON_STROKE = 1.5
+
 export const FIELD_TYPES: FieldTypeMeta[] = [
-  { type: 'signature', label: 'Signature', icon: PenLine, defaultSize: { width: 22, height: 5 } },
-  { type: 'initials', label: 'Initials', icon: Type, defaultSize: { width: 10, height: 5 } },
+  { type: 'signature', label: 'Signature', icon: PenTool, defaultSize: { width: 22, height: 5 } },
+  { type: 'initials', label: 'Initials', icon: CaseSensitive, defaultSize: { width: 10, height: 5 } },
   { type: 'name', label: 'Name', icon: User, defaultSize: { width: 20, height: 3 } },
   { type: 'email', label: 'Email', icon: Mail, defaultSize: { width: 22, height: 3 } },
   { type: 'phone', label: 'Phone', icon: Phone, defaultSize: { width: 18, height: 3 } },
   { type: 'company', label: 'Company', icon: Building2, defaultSize: { width: 22, height: 3 } },
-  { type: 'text', label: 'Text', icon: Type, defaultSize: { width: 20, height: 3 } },
+  { type: 'text', label: 'Text', icon: TextCursorInput, defaultSize: { width: 20, height: 3 } },
   {
     type: 'multiline_text',
     label: 'Multiline Text',
@@ -41,7 +45,7 @@ export const FIELD_TYPES: FieldTypeMeta[] = [
   {
     type: 'selection',
     label: 'Selection',
-    icon: ChevronDown,
+    icon: List,
     defaultSize: { width: 18, height: 3 },
   },
   { type: 'date', label: 'Date', icon: Calendar, defaultSize: { width: 12, height: 3 } },

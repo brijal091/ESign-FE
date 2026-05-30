@@ -2,26 +2,21 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import {
-  ArrowRight,
-  CheckCircle2,
-  FileText,
-  Send,
-  XCircle,
-} from 'lucide-react'
-import type { ActivityGranularity, DashboardSummary } from '@esign/types'
-import { Card, Skeleton, TooltipProvider } from '@esign/ui'
+import { ArrowRight } from 'lucide-react'
+import type { ActivityGranularity, CompletionTimeStats, DashboardSummary } from '@esign/types'
+import { TooltipProvider } from '@esign/ui'
 import {
   ActivityAreaChart,
   CompletionStats,
   PendingDocsTable,
-  RangePicker,
   StatusDonut,
   TopSignersBarChart,
   presetRange,
   type DateRange,
   type RangePreset,
 } from '../../../components/dashboard/charts'
+import { KpiCard, RangeTabs } from '../../../components/dashboard/kpi'
+import { RecentActivityCard } from '../../../components/dashboard/activity'
 import {
   useCompletionTime,
   useDashboardActivity,
@@ -30,22 +25,54 @@ import {
   useTopSigners,
 } from '../../../lib/hooks/use-dashboard'
 
-interface Kpis {
-  total: number
-  inFlight: number
-  completed: number
-  declined: number
+// ─── Range bridge ────────────────────────────────────────────────────────────
+// RangeTabs uses display labels; the activity hook + presetRange use ids.
+const RANGE_LABEL_BY_PRESET: Record<RangePreset, string> = {
+  '7d': '7 days',
+  '30d': '30 days',
+  '90d': '90 days',
+  custom: 'Custom',
+}
+const PRESET_BY_RANGE_LABEL: Record<string, RangePreset> = {
+  '7 days': '7d',
+  '30 days': '30d',
+  '90 days': '90d',
+  Custom: 'custom',
+  // "Today" maps to a 1-day window via custom range below
+  Today: 'custom',
 }
 
-function computeKpis(summary?: DashboardSummary): Kpis {
-  if (!summary) return { total: 0, inFlight: 0, completed: 0, declined: 0 }
-  const s = summary.byStatus
-  return {
-    total: summary.total,
-    inFlight: s.sent + s.viewed + s.signed,
-    completed: s.completed,
-    declined: s.declined,
+function rangeForLabel(label: string, current: DateRange): { preset: RangePreset; range: DateRange } {
+  if (label === 'Today') {
+    const to = new Date()
+    const from = new Date(to.getTime() - 24 * 60 * 60 * 1000)
+    return { preset: 'custom', range: { from: from.toISOString(), to: to.toISOString() } }
   }
+  const preset = PRESET_BY_RANGE_LABEL[label] ?? '30d'
+  if (preset === 'custom') return { preset, range: current }
+  return { preset, range: presetRange(preset, current) }
+}
+
+// ─── KPI helpers ─────────────────────────────────────────────────────────────
+
+function pending(summary?: DashboardSummary): number {
+  if (!summary) return 0
+  const s = summary.byStatus
+  return s.sent + s.viewed + s.signed
+}
+
+function formatAvg(stats?: CompletionTimeStats): string {
+  if (!stats || stats.sampleSize === 0) return '—'
+  const h = stats.avgHours
+  if (h < 1) return `${Math.round(h * 60)} min`
+  if (h < 24) return `${h.toFixed(1)} hrs`
+  const d = h / 24
+  return `${d.toFixed(1)} days`
+}
+
+function formatNumber(n: number | undefined): string {
+  if (n === undefined || n === null) return '—'
+  return n.toLocaleString()
 }
 
 export default function DashboardPage() {
@@ -59,11 +86,25 @@ export default function DashboardPage() {
   const completionQ = useCompletionTime()
   const pendingQ = usePendingDocs(10)
 
-  const kpis = useMemo(() => computeKpis(summaryQ.data), [summaryQ.data])
+  const rangeLabel = RANGE_LABEL_BY_PRESET[preset]
+
+  const kpis = useMemo(() => {
+    const summary = summaryQ.data
+    const stats = completionQ.data
+    const loadingS = summaryQ.isLoading || summaryQ.isError
+    const loadingC = completionQ.isLoading || completionQ.isError
+    return {
+      total: loadingS ? '—' : formatNumber(summary?.total),
+      completed: loadingS ? '—' : formatNumber(summary?.byStatus.completed),
+      pending: loadingS ? '—' : formatNumber(pending(summary)),
+      avg: loadingC ? '—' : formatAvg(stats),
+    }
+  }, [summaryQ.data, summaryQ.isLoading, summaryQ.isError, completionQ.data, completionQ.isLoading, completionQ.isError])
 
   return (
     <TooltipProvider>
       <div className="flex flex-1 flex-col">
+        {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-8 px-8 pb-4 pt-7">
           <div>
             <h1 className="text-[28px] font-semibold leading-[1.15] tracking-tight text-ink">
@@ -74,12 +115,12 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <RangePicker
-              preset={preset}
-              range={range}
-              onChange={(p, r) => {
-                setPreset(p)
-                setRange(r)
+            <RangeTabs
+              active={rangeLabel}
+              onChange={(label) => {
+                const next = rangeForLabel(label, range)
+                setPreset(next.preset)
+                setRange(next.range)
               }}
             />
             <Link
@@ -87,47 +128,46 @@ export default function DashboardPage() {
               className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface-hover"
             >
               All documents
-              <ArrowRight className="size-3.5" />
+              <ArrowRight className="size-3.5" strokeWidth={1.5} />
             </Link>
           </div>
         </div>
 
         <div className="flex flex-1 flex-col gap-[18px] overflow-auto px-8 pb-8 pt-2">
+          {/* 1. KPI strip — label + tabular-num + DeltaBadge */}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <KpiCard
               label="Total documents"
-              icon={<FileText className="size-4" />}
               value={kpis.total}
-              loading={summaryQ.isLoading}
-              error={summaryQ.isError}
-            />
-            <KpiCard
-              label="In flight"
-              icon={<Send className="size-4" />}
-              value={kpis.inFlight}
-              tone="brand"
-              loading={summaryQ.isLoading}
-              error={summaryQ.isError}
+              delta="—"
+              deltaTone="muted"
+              deltaSuffix="vs last period"
             />
             <KpiCard
               label="Completed"
-              icon={<CheckCircle2 className="size-4" />}
               value={kpis.completed}
-              tone="success"
-              loading={summaryQ.isLoading}
-              error={summaryQ.isError}
+              delta="—"
+              deltaTone="muted"
+              deltaSuffix="vs last period"
             />
             <KpiCard
-              label="Declined"
-              icon={<XCircle className="size-4" />}
-              value={kpis.declined}
-              tone="danger"
-              loading={summaryQ.isLoading}
-              error={summaryQ.isError}
+              label="Pending"
+              value={kpis.pending}
+              delta="—"
+              deltaTone="muted"
+              deltaSuffix="vs last period"
+            />
+            <KpiCard
+              label="Avg. time to sign"
+              value={kpis.avg}
+              delta="—"
+              deltaTone="muted"
+              deltaSuffix="vs last period"
             />
           </div>
 
-          <div className="grid gap-[18px] lg:grid-cols-[1fr_1.5fr]">
+          {/* 3. Charts row — status donut + activity area + top signers bar */}
+          <div className="grid gap-[18px] lg:grid-cols-3">
             <StatusDonut
               summary={summaryQ.data}
               loading={summaryQ.isLoading}
@@ -140,21 +180,24 @@ export default function DashboardPage() {
               granularity={granularity}
               onGranularityChange={setGranularity}
             />
-          </div>
-
-          <div className="grid gap-[18px] lg:grid-cols-2">
             <TopSignersBarChart
               signers={topSignersQ.data}
               loading={topSignersQ.isLoading}
               error={topSignersQ.isError}
             />
-            <CompletionStats
-              stats={completionQ.data}
-              loading={completionQ.isLoading}
-              error={completionQ.isError}
-            />
           </div>
 
+          {/* 4. Completion-time tiles */}
+          <CompletionStats
+            stats={completionQ.data}
+            loading={completionQ.isLoading}
+            error={completionQ.isError}
+          />
+
+          {/* 5. Recent activity (mock-backed; no live endpoint yet) */}
+          <RecentActivityCard />
+
+          {/* 6. Pending docs compact */}
           <PendingDocsTable
             docs={pendingQ.data}
             loading={pendingQ.isLoading}
@@ -163,44 +206,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </TooltipProvider>
-  )
-}
-
-// ─── KPI ─────────────────────────────────────────────────────────────────────
-
-interface KpiCardProps {
-  label: string
-  value: number
-  icon: React.ReactNode
-  tone?: 'neutral' | 'brand' | 'success' | 'danger'
-  loading?: boolean
-  error?: boolean
-}
-
-const KPI_ICON_TONE: Record<NonNullable<KpiCardProps['tone']>, string> = {
-  neutral: 'bg-surface-sunken text-ink-muted',
-  brand: 'bg-brand-soft text-brand-strong',
-  success: 'bg-success-soft text-success-strong',
-  danger: 'bg-danger-soft text-danger-strong',
-}
-
-function KpiCard({ label, value, icon, tone = 'neutral', loading, error }: KpiCardProps) {
-  return (
-    <Card className="p-5 shadow-[var(--shadow-1)]">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="text-xs uppercase tracking-wide text-ink-subtle">{label}</div>
-          <div className="mt-2 text-3xl font-semibold tabular-nums text-ink">
-            {loading ? <Skeleton width={64} height={32} /> : error ? '—' : value.toLocaleString()}
-          </div>
-        </div>
-        <span
-          aria-hidden
-          className={`grid size-9 shrink-0 place-items-center rounded-sm ${KPI_ICON_TONE[tone]}`}
-        >
-          {icon}
-        </span>
-      </div>
-    </Card>
   )
 }

@@ -18,7 +18,7 @@ interface Envelope<T> {
 
 interface BeSummary {
   total: number
-  byStatus: {
+  counts: {
     draft: number
     sent: number
     viewed: number
@@ -33,14 +33,14 @@ export async function fetchDashboardSummary(): Promise<DashboardSummary> {
   const res = await apiFetch<Envelope<BeSummary>>('/dashboard/summary')
   return {
     total: res.data.total,
-    byStatus: { ...res.data.byStatus },
+    byStatus: { ...res.data.counts },
   }
 }
 
 // ─── Activity ─────────────────────────────────────────────────────────────────
 
 interface BeActivityPoint {
-  date: string
+  bucket: string
   created: number
   completed: number
 }
@@ -63,7 +63,7 @@ export async function fetchDashboardActivity(range: ActivityRange): Promise<Acti
   })
   const res = await apiFetch<Envelope<BeActivityResponse>>(`/dashboard/activity?${qs}`)
   return res.data.points.map((p) => ({
-    date: p.date,
+    date: p.bucket,
     created: p.created,
     completed: p.completed,
   }))
@@ -74,21 +74,21 @@ export async function fetchDashboardActivity(range: ActivityRange): Promise<Acti
 interface BeTopSigner {
   email: string
   name: string
-  completedCount: number
+  signedCount: number
 }
 
 interface BeTopSignersResponse {
-  signers: BeTopSigner[]
+  items: BeTopSigner[]
 }
 
 export async function fetchTopSigners(limit = 5): Promise<TopSigner[]> {
   const res = await apiFetch<Envelope<BeTopSignersResponse>>(
     `/dashboard/top-signers?limit=${limit}`,
   )
-  return res.data.signers.map((s) => ({
+  return res.data.items.map((s) => ({
     email: s.email,
     name: s.name,
-    completedCount: s.completedCount,
+    completedCount: s.signedCount,
   }))
 }
 
@@ -117,22 +117,22 @@ interface BePendingDoc {
   id: string
   title: string
   status: string
-  sentAt: string | null
+  updatedAt: string | null
   signerCount: number
   signedCount: number
 }
 
 interface BePendingResponse {
-  documents: BePendingDoc[]
+  items: BePendingDoc[]
 }
 
 export async function fetchPendingDocs(limit = 10): Promise<PendingDoc[]> {
   const res = await apiFetch<Envelope<BePendingResponse>>(`/dashboard/pending?limit=${limit}`)
-  return res.data.documents.map((d) => ({
+  return res.data.items.map((d) => ({
     id: d.id,
     title: d.title,
     status: d.status as PendingDoc['status'],
-    sentAt: d.sentAt,
+    sentAt: d.updatedAt,
     signerCount: d.signerCount,
     signedCount: d.signedCount,
   }))

@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 const BE_ORIGIN = (process.env.BE_ORIGIN ?? 'http://localhost:8080/esign').replace(/\/$/, '')
 
 const STRIP_REQUEST_HEADERS = new Set([

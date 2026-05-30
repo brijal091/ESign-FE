@@ -6,7 +6,7 @@ import {
   type DocumentStatusEvent,
 } from '@esign/types'
 
-export type StreamState = 'connecting' | 'open' | 'reconnecting' | 'closed'
+export type StreamState = 'connecting' | 'open' | 'reconnecting' | 'closed' | 'disabled'
 
 export interface DocumentStreamOptions {
   path: string
@@ -14,10 +14,12 @@ export interface DocumentStreamOptions {
   baseUrl?: string
   onEvent?: (event: DocumentStatusEvent) => void
   onStateChange?: (state: StreamState) => void
+  onFatal?: (status: number) => void
 }
 
 const DEFAULT_BASE = '/api/be'
 const BACKOFF_MS = [1000, 2000, 4000, 8000, 16000, 30000]
+const FATAL_STATUSES = new Set([401, 403, 404, 501])
 
 export class DocumentStream {
   private readonly opts: DocumentStreamOptions
@@ -67,8 +69,9 @@ export class DocumentStream {
 
     this.controller = new AbortController()
 
+    let res: Response
     try {
-      const res = await fetch(url, {
+      res = await fetch(url, {
         method: 'GET',
         headers: {
           Accept: 'text/event-stream',
@@ -78,20 +81,47 @@ export class DocumentStream {
         signal: this.controller.signal,
         cache: 'no-store',
       })
-
-      if (!res.ok || !res.body) {
-        throw new Error(`SSE connect failed: ${res.status}`)
-      }
-
-      this.setState('open')
-      this.attempt = 0
-
-      await this.readStream(res.body)
-      if (!this.stopped) this.scheduleReconnect()
     } catch (err) {
       if ((err as Error).name === 'AbortError' || this.stopped) return
+      console.warn('[sse] connect network error; will retry', err)
       this.scheduleReconnect()
+      return
     }
+
+    if (FATAL_STATUSES.has(res.status)) {
+      console.warn(`[sse] disabled: ${this.opts.path} returned ${res.status} (stream not available)`)
+      this.disable(res.status)
+      return
+    }
+
+    if (!res.ok || !res.body) {
+      console.warn(`[sse] connect failed: ${res.status}; will retry`)
+      this.scheduleReconnect()
+      return
+    }
+
+    this.setState('open')
+    this.attempt = 0
+
+    try {
+      await this.readStream(res.body)
+    } catch (err) {
+      if ((err as Error).name === 'AbortError' || this.stopped) return
+      console.warn('[sse] read error; will retry', err)
+    }
+    if (!this.stopped) this.scheduleReconnect()
+  }
+
+  private disable(status: number): void {
+    this.stopped = true
+    if (this.retryTimer) {
+      clearTimeout(this.retryTimer)
+      this.retryTimer = null
+    }
+    this.controller?.abort()
+    this.controller = null
+    this.setState('disabled')
+    this.opts.onFatal?.(status)
   }
 
   private async readStream(body: ReadableStream<Uint8Array>): Promise<void> {
