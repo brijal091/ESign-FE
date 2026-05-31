@@ -6,7 +6,7 @@ import { OfflineBanner } from '../../components/system/offline-banner'
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <AuthGuard>
-      <div className="flex min-h-screen flex-col bg-paper">
+      <div className="flex h-screen flex-col overflow-hidden bg-paper">
         <TopNav />
         <OfflineBanner />
         <main className="flex flex-1 flex-col">{children}</main>
