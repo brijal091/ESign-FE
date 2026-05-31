@@ -111,7 +111,12 @@ export function FieldSidebar({
               <div className="flex items-center gap-2.5 rounded-sm border border-border-subtle bg-surface-raised px-2.5 py-2">
                 <PdfThumb />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-[13px] font-medium text-ink">{doc.title}</div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="truncate text-[13px] font-medium text-ink">{doc.title}</div>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">{doc.title}</TooltipContent>
+                  </Tooltip>
                   <div className="mt-0.5 text-[11.5px] text-ink-subtle">PDF document</div>
                 </div>
               </div>
