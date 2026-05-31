@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   ChevronDown,
   ChevronRight,
@@ -97,7 +97,7 @@ export function FieldSidebar({
 
   return (
     <aside className="flex h-full min-h-0 w-80 shrink-0 flex-col border-l border-border bg-surface">
-      <div className="min-h-0 flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+      <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* ───── Document ───── */}
         <section className="border-b border-border-subtle pb-3">
           <SectionHeader
