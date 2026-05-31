@@ -118,8 +118,7 @@ export function PdfCanvas({
       {/* ── Left: page thumbnail strip ── */}
       {numPages > 0 && (
         <div
-          className="flex w-[120px] shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-surface px-2 py-3"
-          style={{ scrollbarWidth: 'none' } as React.CSSProperties}
+          className="no-scrollbar flex w-[120px] shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-surface px-2 py-3"
         >
           <Document file={fileUrl} loading={null} error={null}>
             {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNumber) => (
@@ -159,7 +158,7 @@ export function PdfCanvas({
       {/* ── Center: main PDF canvas ── */}
       <div
         ref={scrollerRef}
-        className="flex flex-1 flex-col items-center gap-6 overflow-auto px-6 py-8"
+        className="flex flex-1 flex-col items-center gap-6 overflow-auto px-6 py-8 no-scrollbar"
         onPointerDown={(e) => {
           if (e.target === e.currentTarget) onSelectField(null)
         }}
