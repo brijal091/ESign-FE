@@ -13,5 +13,6 @@
   --font-mono:    "Geist Mono", var(--font-geist-mono, ui-monospace), Menlo, monospace;
 }
 
-/* Hide webkit scrollbar on elements that use overflow-y-auto with scrollbarWidth:none */
-*[style*="scrollbar-width"]::-webkit-scrollbar { display: none; }
+/* Hide webkit scrollbar on any element that sets scrollbar-width:none via inline style */
+*[style*="scrollbar-width: none"]::-webkit-scrollbar,
+*[style*="scrollbar-width:none"]::-webkit-scrollbar { display: none; }

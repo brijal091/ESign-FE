@@ -116,7 +116,7 @@ export function PdfCanvas({
       {/* ── Left: page thumbnail strip ── */}
       {numPages > 0 && (
         <div
-          className="flex w-[100px] shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-surface px-2 py-3"
+          className="flex w-[120px] shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-surface px-2 py-3"
           style={{ scrollbarWidth: 'none' } as React.CSSProperties}
         >
           <Document file={fileUrl} loading={null} error={null}>
@@ -135,7 +135,7 @@ export function PdfCanvas({
                 <div className="w-full overflow-hidden rounded-[2px] shadow-[var(--shadow-1)] ring-1 ring-border">
                   <Page
                     pageNumber={pageNumber}
-                    width={76}
+                    width={92}
                     renderAnnotationLayer={false}
                     renderTextLayer={false}
                   />

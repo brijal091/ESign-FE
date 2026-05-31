@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   ChevronDown,
   ChevronRight,
@@ -9,7 +9,7 @@ import {
   UserPlus,
   X,
 } from 'lucide-react'
-import { ScrollArea, Tooltip, TooltipTrigger, TooltipContent, cn } from '@esign/ui'
+import { Tooltip, TooltipTrigger, TooltipContent, cn } from '@esign/ui'
 import type { Document, Signer } from '@esign/types'
 import { FIELD_TYPES } from '../../lib/field-types'
 import { DraggableField } from './draggable-field'
@@ -97,7 +97,7 @@ export function FieldSidebar({
 
   return (
     <aside className="flex h-full min-h-0 w-80 shrink-0 flex-col border-l border-border bg-surface">
-      <ScrollArea className="min-h-0 flex-1">
+      <div className="min-h-0 flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
         {/* ───── Document ───── */}
         <section className="border-b border-border-subtle pb-3">
           <SectionHeader
@@ -235,7 +235,7 @@ export function FieldSidebar({
             </div>
           )}
         </section>
-      </ScrollArea>
+      </div>
 
       <div className="z-10 mt-auto shrink-0 border-t border-border-subtle bg-surface-raised p-3">
         {doc.signers.length >= MAX_SIGNERS ? (
