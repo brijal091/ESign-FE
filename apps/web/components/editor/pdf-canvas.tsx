@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
@@ -97,9 +97,11 @@ export function PdfCanvas({
 
   function scrollToPage(pageNumber: number) {
     const el = pageEls.current.get(pageNumber)
-    if (el && scrollerRef.current) {
-      scrollerRef.current.scrollTo({ top: el.offsetTop - 32, behavior: 'smooth' })
-    }
+    const scroller = scrollerRef.current
+    if (!el || !scroller) return
+    const scrollerRect = scroller.getBoundingClientRect()
+    const elRect = el.getBoundingClientRect()
+    scroller.scrollTop = scroller.scrollTop + elRect.top - scrollerRect.top - 32
   }
 
   return (
@@ -113,7 +115,10 @@ export function PdfCanvas({
     >
       {/* ── Left: page thumbnail strip ── */}
       {numPages > 0 && (
-        <div className="no-scrollbar flex w-[100px] shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-surface px-2 py-3">
+        <div
+          className="flex w-[100px] shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-surface px-2 py-3"
+          style={{ scrollbarWidth: 'none' } as React.CSSProperties}
+        >
           <Document file={fileUrl} loading={null} error={null}>
             {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNumber) => (
               <button
