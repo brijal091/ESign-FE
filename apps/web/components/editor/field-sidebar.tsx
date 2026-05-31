@@ -113,9 +113,13 @@ export function FieldSidebar({
                 <div className="min-w-0 flex-1">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="truncate text-[13px] font-medium text-ink">{doc.title}</div>
+                      <div className="text-[13px] font-medium text-ink">
+                        {doc.title.length > 20 ? `${doc.title.slice(0, 20)}…` : doc.title}
+                      </div>
                     </TooltipTrigger>
-                    <TooltipContent side="right">{doc.title}</TooltipContent>
+                    {doc.title.length > 20 && (
+                      <TooltipContent side="right">{doc.title}</TooltipContent>
+                    )}
                   </Tooltip>
                   <div className="mt-0.5 text-[11.5px] text-ink-subtle">PDF document</div>
                 </div>
