@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { cn } from '@esign/ui'
 import type { DocumentField, FieldPosition } from '@esign/types'
 import { fieldTypeMeta } from '../../lib/field-types'
@@ -79,6 +79,13 @@ export function PlacedField({
   const [draft, setDraft] = useState<FieldPosition | null>(null)
   const pos = draft ?? field.position
 
+  // Clear draft only after field.position has been updated (optimistic or server).
+  // This prevents a flicker frame where draft=null but field.position is still stale.
+  const { x, y, width, height } = field.position
+  useEffect(() => {
+    setDraft(null)
+  }, [x, y, width, height])
+
   const startGesture = useCallback(
     (e: React.PointerEvent, handle: Handle | 'move') => {
       e.stopPropagation()
@@ -114,9 +121,11 @@ export function PlacedField({
       function onUp() {
         window.removeEventListener('pointermove', onMove)
         window.removeEventListener('pointerup', onUp)
+        // Keep draft alive — cleared by the useEffect above once field.position syncs.
+        // Clearing it here would cause a 1-frame snap back to the old position.
         setDraft((prev) => {
           if (prev) onCommit(prev)
-          return null
+          return prev
         })
       }
 
