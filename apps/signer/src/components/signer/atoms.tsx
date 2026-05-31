@@ -24,7 +24,7 @@ import {
 import { LogoWordmark } from '@esign/ui'
 
 /* ============ Wordmark ============ */
-export function Wordmark({ size = 18 }: { size?: number }) {
+export function Wordmark({ size = 24 }: { size?: number }) {
   return <LogoWordmark height={size} />
 }
 
