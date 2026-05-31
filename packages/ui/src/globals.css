@@ -323,3 +323,58 @@
     border-radius: var(--radius-sm);
   }
 }
+
+/* ============================================================
+   Dark mode — warm dark palette (charcoal-brown + terracotta)
+   Triggered by next-themes writing data-theme="dark" on <html>.
+   ============================================================ */
+
+[data-theme="dark"] {
+  /* ── Surfaces ── */
+  --color-paper:           oklch(0.13 0.012 55);
+  --color-surface:         oklch(0.16 0.012 55);
+  --color-surface-hover:   oklch(0.20 0.014 55);
+  --color-surface-raised:  oklch(0.19 0.012 55);
+  --color-surface-sunken:  oklch(0.11 0.010 55);
+
+  /* ── Ink (text) ── */
+  --color-ink:             oklch(0.93 0.008 75);
+  --color-ink-muted:       oklch(0.72 0.010 70);
+  --color-ink-subtle:      oklch(0.55 0.010 65);
+  --color-ink-faint:       oklch(0.38 0.008 60);
+  --color-ink-inverse:     oklch(0.13 0.012 55);
+
+  /* ── Borders ── */
+  --color-border:          oklch(0.26 0.012 55);
+  --color-border-strong:   oklch(0.34 0.014 55);
+  --color-border-subtle:   oklch(0.20 0.010 55);
+
+  /* ── Brand (terracotta — slightly lighter for dark bg contrast) ── */
+  --color-brand:           oklch(0.72 0.155 38);
+  --color-brand-hover:     oklch(0.76 0.155 38);
+  --color-brand-active:    oklch(0.68 0.160 38);
+  --color-brand-soft:      oklch(0.22 0.045 38);
+  --color-brand-strong:    oklch(0.82 0.140 38);
+
+  /* ── Semantic — success ── */
+  --color-success-soft:    oklch(0.18 0.040 145);
+  --color-success-strong:  oklch(0.72 0.110 145);
+
+  /* ── Semantic — warning ── */
+  --color-warning-soft:    oklch(0.20 0.050 75);
+  --color-warning-strong:  oklch(0.82 0.130 75);
+
+  /* ── Semantic — danger ── */
+  --color-danger-soft:     oklch(0.19 0.045 22);
+  --color-danger-strong:   oklch(0.72 0.170 22);
+
+  /* ── Semantic — info ── */
+  --color-info-soft:       oklch(0.18 0.030 245);
+  --color-info-strong:     oklch(0.70 0.090 245);
+
+  /* ── Shadows ── */
+  --shadow-1:     0 1px 2px oklch(0 0 0 / 0.25);
+  --shadow-2:     0 8px 24px oklch(0 0 0 / 0.40), 0 2px 4px oklch(0 0 0 / 0.20);
+  --shadow-3:     0 24px 48px oklch(0 0 0 / 0.55), 0 4px 8px oklch(0 0 0 / 0.25);
+  --shadow-focus: 0 0 0 3px oklch(0.22 0.045 38);
+}
