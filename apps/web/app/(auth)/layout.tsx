@@ -174,7 +174,7 @@ function BrandPanel({ variant }: { variant: BrandVariant }) {
       {/* Wordmark */}
       <div className="relative z-10">
         <Link href="/" className="inline-flex items-center">
-          <LogoWordmark height={40} />
+          <LogoWordmark height={60} />
         </Link>
       </div>
 
