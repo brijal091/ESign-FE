@@ -47,17 +47,19 @@ export function PdfCanvas({
     [],
   )
 
-  // Track which page is currently most-visible
+  // Track which page is currently most-visible using viewport-relative rects
   useEffect(() => {
     const scroller = scrollerRef.current
     if (!scroller || numPages === 0) return
     function onScroll() {
       if (!scroller) return
-      const mid = scroller.scrollTop + scroller.clientHeight / 2
+      const scrollerRect = scroller.getBoundingClientRect()
+      const mid = scrollerRect.top + scrollerRect.height / 2
       let nearest = 1
       let nearestDist = Infinity
       for (const [pn, el] of pageEls.current.entries()) {
-        const center = el.offsetTop + el.clientHeight / 2
+        const elRect = el.getBoundingClientRect()
+        const center = elRect.top + elRect.height / 2
         const dist = Math.abs(center - mid)
         if (dist < nearestDist) {
           nearestDist = dist
