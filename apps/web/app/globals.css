@@ -12,3 +12,8 @@
   --font-display: "Instrument Serif", var(--font-instrument-serif, ui-serif), Georgia, serif;
   --font-mono:    "Geist Mono", var(--font-geist-mono, ui-monospace), Menlo, monospace;
 }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}

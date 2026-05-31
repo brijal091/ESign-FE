@@ -113,7 +113,7 @@ export function PdfCanvas({
     >
       {/* ── Left: page thumbnail strip ── */}
       {numPages > 0 && (
-        <div className="flex w-[72px] shrink-0 flex-col gap-2 overflow-y-auto border-r border-border bg-surface px-2 py-3">
+        <div className="no-scrollbar flex w-[100px] shrink-0 flex-col gap-1 overflow-y-auto border-r border-border bg-surface px-2 py-3">
           <Document file={fileUrl} loading={null} error={null}>
             {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNumber) => (
               <button
@@ -121,16 +121,16 @@ export function PdfCanvas({
                 type="button"
                 onClick={() => scrollToPage(pageNumber)}
                 className={cn(
-                  'group mb-1 flex w-full flex-col items-center gap-1 rounded-sm p-1 transition-colors',
+                  'mb-1 flex w-full flex-col items-center gap-1.5 rounded-sm p-1.5 transition-colors',
                   currentPage === pageNumber
                     ? 'bg-brand-soft ring-1 ring-brand'
                     : 'hover:bg-surface-hover',
                 )}
               >
-                <div className="w-full overflow-hidden rounded-[2px] ring-1 ring-border">
+                <div className="w-full overflow-hidden rounded-[2px] shadow-[var(--shadow-1)] ring-1 ring-border">
                   <Page
                     pageNumber={pageNumber}
-                    width={52}
+                    width={76}
                     renderAnnotationLayer={false}
                     renderTextLayer={false}
                   />
