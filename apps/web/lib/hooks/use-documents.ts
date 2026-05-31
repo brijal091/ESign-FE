@@ -50,6 +50,15 @@ export function useUpdateDocument(id: string) {
     mutationFn: (
       patch: Partial<Pick<Document, 'title' | 'tags' | 'workflowType' | 'expiresAt' | 'message' | 'signers' | 'fields' | 'status'>>,
     ) => updateDocument(id, patch),
+    onMutate: async (patch) => {
+      await qc.cancelQueries({ queryKey: KEYS.one(id) })
+      const previous = qc.getQueryData<Document>(KEYS.one(id))
+      qc.setQueryData<Document>(KEYS.one(id), (old) => (old ? { ...old, ...patch } : old))
+      return { previous }
+    },
+    onError: (_err, _patch, ctx) => {
+      if (ctx?.previous) qc.setQueryData(KEYS.one(id), ctx.previous)
+    },
     onSuccess: (doc) => {
       qc.setQueryData(KEYS.one(id), doc)
       qc.invalidateQueries({ queryKey: KEYS.all })
