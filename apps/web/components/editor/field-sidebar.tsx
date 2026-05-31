@@ -207,17 +207,24 @@ export function FieldSidebar({
               </span>
             )}
           </header>
-          <div className="grid grid-cols-2 gap-1.5 px-3">
-            {FIELD_TYPES.map((meta) => (
-              <DraggableField
-                key={meta.type}
-                type={meta.type}
-                signerId={selectedSignerId}
-                color={selectedSignerColor}
-                disabled={selectedSignerId == null}
-              />
-            ))}
-          </div>
+          {selectedSignerId == null ? (
+            <div className="mx-3 flex items-start gap-2 rounded-sm border border-brand/30 bg-brand-soft px-3 py-2.5 text-[12px] leading-snug text-brand-strong">
+              <span className="mt-px shrink-0 text-base leading-none">↑</span>
+              <span>Select a recipient above to start placing fields on the PDF.</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-1.5 px-3">
+              {FIELD_TYPES.map((meta) => (
+                <DraggableField
+                  key={meta.type}
+                  type={meta.type}
+                  signerId={selectedSignerId}
+                  color={selectedSignerColor}
+                  disabled={false}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </ScrollArea>
 

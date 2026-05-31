@@ -61,7 +61,9 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
   const setSelectedSigner = useEditorStore((s) => s.setSelectedSigner)
 
   useEffect(() => {
-    if (doc && !selectedSignerId && doc.signers[0]) {
+    if (!doc) return
+    const existsInDoc = doc.signers.some((s) => s.id === selectedSignerId)
+    if (!existsInDoc && doc.signers[0]) {
       setSelectedSigner(doc.signers[0].id)
     }
   }, [doc, selectedSignerId, setSelectedSigner])
