@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  LogoWordmark,
 } from '@esign/ui'
 import { useAuth } from '@/lib/auth/use-auth'
 
@@ -33,14 +34,8 @@ export function TopNav() {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-6 border-b border-border bg-paper/85 px-6 backdrop-blur-md">
-      <Link href="/documents" className="flex items-center gap-2.5">
-        <span
-          aria-hidden
-          className="grid size-7 place-items-center rounded-md bg-brand text-ink-inverse font-display italic text-base leading-none"
-        >
-          E
-        </span>
-        <span className="font-display text-xl leading-none text-ink">ESign</span>
+      <Link href="/documents" className="flex items-center">
+        <LogoWordmark height={20} />
       </Link>
 
       <nav className="flex items-center gap-1 text-sm">

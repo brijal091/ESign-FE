@@ -25,10 +25,14 @@ function getServerToken(): string | null {
 // remounts and across multiple components subscribing to the same path.
 const disabledPaths = new Set<string>()
 
+// SSE disabled until Redis is connected — set to true to re-enable.
+const STREAM_ENABLED = false
+
 export function useDocumentStream(
   options: UseDocumentStreamOptions = {},
 ): UseDocumentStreamResult {
-  const { documentId, enabled = true, onEvent } = options
+  const { documentId, enabled: callerEnabled = true, onEvent } = options
+  const enabled = callerEnabled && STREAM_ENABLED
 
   const token = useSyncExternalStore(subscribe, getToken, getServerToken)
 

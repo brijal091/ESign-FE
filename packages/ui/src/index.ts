@@ -1,4 +1,5 @@
 export { cn } from './utils'
+export { LogoMark, LogoWordmark } from './components/logo'
 export { Button, buttonVariants } from './components/button'
 export { Badge, badgeVariants } from './components/badge'
 export { Input } from './components/input'

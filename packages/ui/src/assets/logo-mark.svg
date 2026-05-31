@@ -1,7 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+  <!-- Signed E logomark: geometric E letterform with signature flourish -->
+  <!-- Vertical spine -->
   <path d="M16 12 V52" stroke="#C4602A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Top arm -->
   <path d="M16 12 H46" stroke="#C4602A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Middle arm — shortened and slightly lifted (signature gesture) -->
   <path d="M16 32 L40 27" stroke="#C4602A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bottom arm -->
   <path d="M16 52 H48" stroke="#C4602A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Signature flourish: a flowing curve sweeping right from the bottom arm -->
   <path d="M48 52 C54 52 58 48 56 42" stroke="#C4602A" stroke-width="4" stroke-linecap="round" fill="none"/>
 </svg>

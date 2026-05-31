@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { LogoWordmark } from '@esign/ui'
 
 type BrandVariant =
   | 'welcome'
@@ -172,17 +173,8 @@ function BrandPanel({ variant }: { variant: BrandVariant }) {
 
       {/* Wordmark */}
       <div className="relative z-10">
-        <Link href="/" className="inline-flex items-center gap-[9px]">
-          <span
-            aria-hidden
-            className="grid h-7 w-7 place-items-center rounded-[7px] bg-brand font-display italic font-semibold text-[22px] leading-none text-ink-inverse"
-            style={{ boxShadow: '0 1px 2px oklch(0.4 0.1 38 / 0.25)' }}
-          >
-            E
-          </span>
-          <span className="font-display text-[28px] leading-none tracking-[-0.02em] text-ink">
-            ESign
-          </span>
+        <Link href="/" className="inline-flex items-center">
+          <LogoWordmark height={26} />
         </Link>
       </div>
 

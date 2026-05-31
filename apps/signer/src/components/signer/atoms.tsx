@@ -21,22 +21,11 @@ import {
   User,
   X,
 } from 'lucide-react'
+import { LogoWordmark } from '@esign/ui'
 
 /* ============ Wordmark ============ */
 export function Wordmark({ size = 18 }: { size?: number }) {
-  return (
-    <span className="inline-flex items-center gap-2 leading-none">
-      <span
-        className="grid place-items-center rounded-md bg-brand font-display italic text-ink-inverse"
-        style={{ width: size + 8, height: size + 8, fontSize: size - 2 }}
-      >
-        E
-      </span>
-      <span className="font-display text-ink" style={{ fontSize: size + 4 }}>
-        ESign
-      </span>
-    </span>
-  )
+  return <LogoWordmark height={size} />
 }
 
 /* ============ Shell ============ */
