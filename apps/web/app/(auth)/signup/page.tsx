@@ -112,7 +112,7 @@ export default function SignupPage() {
           email={email}
           verificationToken={verificationToken}
           onBack={() => setStep(1)}
-          onDone={() => router.replace('/login')}
+          onDone={() => router.replace('/dashboard')}
         />
       )}
     </div>
@@ -489,7 +489,7 @@ function OrgStep({
 
     try {
       await register.mutateAsync(parsed.data)
-      toast.success('Account created — sign in to continue')
+      toast.success('Welcome! Your account is ready.')
       onDone()
     } catch (err) {
       toast.error(getErrorMessage(err, 'Registration failed'))

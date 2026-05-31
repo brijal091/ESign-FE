@@ -63,13 +63,18 @@ export function useConfirmOtp() {
 
 export function useRegisterOrganization() {
   return useMutation({
-    mutationFn: (input: RegisterOrganizationRequest): Promise<GenericApiResponse> =>
-      apiFetch(`${AUTH_BASE}/register-organization`, {
+    mutationFn: async (input: RegisterOrganizationRequest): Promise<LoginResponse> => {
+      const result = await apiFetch(`${AUTH_BASE}/register-organization`, {
         method: 'POST',
         body: input,
         auth: false,
-        schema: GenericApiResponseSchema,
-      }),
+        schema: LoginResponseSchema,
+      })
+      if (result.token) {
+        writeSession({ token: result.token, role: result.role, user: result.userdetails })
+      }
+      return result
+    },
   })
 }
 
