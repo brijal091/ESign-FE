@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useTheme } from 'next-themes'
 import {
   Search,
   Shield,
@@ -22,6 +23,9 @@ import {
   ArrowRight,
   Check,
   Loader2,
+  Sun,
+  Moon,
+  Monitor,
 } from 'lucide-react'
 import {
   Button,
@@ -39,6 +43,7 @@ import {
   TableHeader,
   TableRow,
   toast,
+  cn,
 } from '@esign/ui'
 import type {
   AdminRole,
@@ -930,6 +935,56 @@ export function PlaceholderSection({ title }: { title: string }) {
         <div className="grid min-h-[320px] place-items-center rounded-md border border-dashed border-border bg-surface text-sm text-ink-subtle">
           {title} — coming soon
         </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Appearance ───────────────────────────────────────────────────────────────
+
+type ThemeOption = 'light' | 'system' | 'dark'
+
+const THEME_OPTIONS: { value: ThemeOption; label: string; icon: typeof Sun }[] = [
+  { value: 'light', label: 'Light', icon: Sun },
+  { value: 'system', label: 'System', icon: Monitor },
+  { value: 'dark', label: 'Dark', icon: Moon },
+]
+
+export function AppearanceSection() {
+  const { theme, setTheme } = useTheme()
+
+  return (
+    <div className="flex flex-1 flex-col overflow-auto">
+      <AdminPageHeader
+        title="Appearance"
+        subtitle="Choose how ESign looks on this device."
+      />
+      <div className="px-8 pb-8">
+        <SettingsCard
+          title="Theme"
+          description="Applies to this browser only. System follows your OS setting."
+        >
+          <div className="flex gap-2">
+            {THEME_OPTIONS.map(({ value, label, icon: Icon }) => {
+              const isActive = theme === value
+              return (
+                <button
+                  key={value}
+                  onClick={() => setTheme(value)}
+                  className={cn(
+                    'flex flex-1 flex-col items-center gap-2 rounded-md border px-4 py-4 text-[13px] font-medium transition-all',
+                    isActive
+                      ? 'border-brand bg-brand-soft text-brand-strong shadow-[var(--shadow-1)]'
+                      : 'border-border bg-surface text-ink-muted hover:border-border-strong hover:text-ink',
+                  )}
+                >
+                  <Icon className="size-5" />
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </SettingsCard>
       </div>
     </div>
   )

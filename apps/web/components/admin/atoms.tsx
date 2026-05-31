@@ -8,6 +8,7 @@ import {
   ScrollText,
   CreditCard,
   Plug,
+  Monitor,
   ChevronDown,
   Zap,
   type LucideIcon,
@@ -23,6 +24,7 @@ const SECTION_ICONS: Record<string, LucideIcon> = {
   'scroll-text': ScrollText,
   'credit-card': CreditCard,
   plug: Plug,
+  monitor: Monitor,
 }
 
 export function AdminSubNav({

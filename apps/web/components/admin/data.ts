@@ -70,6 +70,7 @@ export const AUDIT: AuditRow[] = [
 
 export const ADMIN_SECTIONS = [
   { key: 'General', icon: 'settings' as const },
+  { key: 'Appearance', icon: 'monitor' as const },
   { key: 'Users', icon: 'users' as const },
   { key: 'Roles', label: 'Roles & Permissions', icon: 'shield-check' as const },
   { key: 'Branding', icon: 'palette' as const },

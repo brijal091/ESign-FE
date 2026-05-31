@@ -7,6 +7,7 @@ import {
   AuditLogSection,
   GeneralSettingsSection,
   BrandingSection,
+  AppearanceSection,
   PlaceholderSection,
 } from '../../../components/admin/sections'
 
@@ -25,6 +26,8 @@ export default function ConfigurationPage() {
           <GeneralSettingsSection />
         ) : section === 'Branding' ? (
           <BrandingSection />
+        ) : section === 'Appearance' ? (
+          <AppearanceSection />
         ) : (
           <PlaceholderSection title={section === 'Roles' ? 'Roles & Permissions' : section} />
         )}
