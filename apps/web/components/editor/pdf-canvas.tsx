@@ -5,6 +5,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 import { FileText, Loader2, Minus, Plus } from 'lucide-react'
+import { cn } from '@esign/ui'
 import type { DocumentField, FieldPosition, Signer } from '@esign/types'
 import { DroppablePage } from './droppable-page'
 import { FieldOverlay } from './field-overlay'
@@ -94,14 +95,61 @@ export function PdfCanvas({
 
   const renderWidth = Math.round((BASE_WIDTH * zoom) / 100)
 
+  function scrollToPage(pageNumber: number) {
+    const el = pageEls.current.get(pageNumber)
+    if (el && scrollerRef.current) {
+      scrollerRef.current.scrollTo({ top: el.offsetTop - 32, behavior: 'smooth' })
+    }
+  }
+
   return (
     <section
-      className="relative flex flex-1 flex-col overflow-hidden bg-surface-sunken"
+      className="relative flex flex-1 overflow-hidden"
       style={{
         backgroundImage: 'radial-gradient(var(--color-border) 1px, transparent 1px)',
         backgroundSize: '20px 20px',
+        backgroundColor: 'var(--color-surface-sunken)',
       }}
     >
+      {/* ── Left: page thumbnail strip ── */}
+      {numPages > 0 && (
+        <div className="flex w-[72px] shrink-0 flex-col gap-2 overflow-y-auto border-r border-border bg-surface px-2 py-3">
+          <Document file={fileUrl} loading={null} error={null}>
+            {Array.from({ length: numPages }, (_, i) => i + 1).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                type="button"
+                onClick={() => scrollToPage(pageNumber)}
+                className={cn(
+                  'group mb-1 flex w-full flex-col items-center gap-1 rounded-sm p-1 transition-colors',
+                  currentPage === pageNumber
+                    ? 'bg-brand-soft ring-1 ring-brand'
+                    : 'hover:bg-surface-hover',
+                )}
+              >
+                <div className="w-full overflow-hidden rounded-[2px] ring-1 ring-border">
+                  <Page
+                    pageNumber={pageNumber}
+                    width={52}
+                    renderAnnotationLayer={false}
+                    renderTextLayer={false}
+                  />
+                </div>
+                <span
+                  className={cn(
+                    'font-mono text-[9px] font-semibold tabular-nums',
+                    currentPage === pageNumber ? 'text-brand-strong' : 'text-ink-faint',
+                  )}
+                >
+                  {pageNumber}
+                </span>
+              </button>
+            ))}
+          </Document>
+        </div>
+      )}
+
+      {/* ── Center: main PDF canvas ── */}
       <div
         ref={scrollerRef}
         className="flex flex-1 flex-col items-center gap-6 overflow-auto px-6 py-8"

@@ -155,6 +155,27 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
         />
 
         <div className="flex min-h-0 flex-1 overflow-hidden">
+          {pdfUrl ? (
+            <PdfCanvas
+              fileUrl={pdfUrl}
+              fields={doc.fields}
+              signers={doc.signers}
+              selectedFieldId={selectedFieldId}
+              onSelectField={setSelectedField}
+              onMoveField={(fieldId, position) =>
+                update.mutate({
+                  fields: doc.fields.map((f) =>
+                    f.id === fieldId ? { ...f, position } : f,
+                  ),
+                })
+              }
+            />
+          ) : (
+            <div className="flex flex-1 items-center justify-center bg-surface-sunken text-sm text-ink-subtle">
+              No PDF attached to this document.
+            </div>
+          )}
+
           <FieldSidebar
             doc={doc}
             selectedSignerId={selectedSignerId}
@@ -183,27 +204,6 @@ export default function EditorPage({ params }: { params: Promise<{ id: string }>
               })
             }
           />
-
-          {pdfUrl ? (
-            <PdfCanvas
-              fileUrl={pdfUrl}
-              fields={doc.fields}
-              signers={doc.signers}
-              selectedFieldId={selectedFieldId}
-              onSelectField={setSelectedField}
-              onMoveField={(fieldId, position) =>
-                update.mutate({
-                  fields: doc.fields.map((f) =>
-                    f.id === fieldId ? { ...f, position } : f,
-                  ),
-                })
-              }
-            />
-          ) : (
-            <div className="flex flex-1 items-center justify-center bg-surface-sunken text-sm text-ink-subtle">
-              No PDF attached to this document.
-            </div>
-          )}
         </div>
       </div>
 
