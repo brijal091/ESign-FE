@@ -319,6 +319,41 @@ function SignerRow({
   onDelete,
 }: SignerRowProps) {
   const [editing, setEditing] = useState(false)
+  // Local copies — only committed on blur/Enter, never on every keystroke
+  const [localName, setLocalName] = useState(signer.name)
+  const [localEmail, setLocalEmail] = useState(signer.email)
+
+  function openEdit() {
+    setLocalName(signer.name)
+    setLocalEmail(signer.email)
+    setEditing(true)
+  }
+
+  function commit() {
+    const trimmedName = localName.trim()
+    const trimmedEmail = localEmail.trim()
+    if (trimmedName && trimmedName !== signer.name) onChangeName(trimmedName)
+    if (trimmedEmail !== signer.email) onChangeEmail(trimmedEmail)
+    setEditing(false)
+  }
+
+  function cancel() {
+    setLocalName(signer.name)
+    setLocalEmail(signer.email)
+    setEditing(false)
+  }
+
+  // Close and commit when focus moves fully outside the edit area
+  function handleEditBlur(e: React.FocusEvent<HTMLDivElement>) {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+      commit()
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') { e.preventDefault(); commit() }
+    if (e.key === 'Escape') { e.preventDefault(); cancel() }
+  }
 
   return (
     <div
@@ -335,9 +370,7 @@ function SignerRow({
       )}
       <button
         type="button"
-        onClick={() => {
-          onSelect()
-        }}
+        onClick={onSelect}
         className="flex w-full items-center gap-2.5 px-2.5 py-2 pl-3 text-left"
       >
         <span
@@ -360,10 +393,7 @@ function SignerRow({
         )}
         <button
           type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            setEditing((v) => !v)
-          }}
+          onClick={(e) => { e.stopPropagation(); editing ? commit() : openEdit() }}
           aria-label="Edit signer"
           className="grid size-[22px] shrink-0 place-items-center rounded text-ink-faint transition-colors hover:bg-surface-hover hover:text-ink"
         >
@@ -372,10 +402,7 @@ function SignerRow({
         {canDelete && (
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDelete()
-            }}
+            onClick={(e) => { e.stopPropagation(); onDelete() }}
             aria-label="Remove signer"
             className="grid size-[22px] shrink-0 place-items-center rounded text-ink-faint transition-colors hover:bg-surface-hover hover:text-danger-strong"
           >
@@ -385,23 +412,42 @@ function SignerRow({
       </button>
 
       {editing && (
-        <div className="flex flex-col gap-1.5 px-2.5 pb-2.5">
+        <div
+          className="flex flex-col gap-1.5 px-2.5 pb-2.5"
+          onBlur={handleEditBlur}
+          onKeyDown={handleKeyDown}
+        >
           <input
             type="text"
-            value={signer.name}
-            onChange={(e) => onChangeName(e.target.value)}
-            onBlur={() => setEditing(false)}
+            value={localName}
+            onChange={(e) => setLocalName(e.target.value)}
             autoFocus
             placeholder="Name"
             className="rounded-sm border border-border bg-surface px-2 py-1 text-xs text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
           />
           <input
             type="email"
-            value={signer.email}
-            onChange={(e) => onChangeEmail(e.target.value)}
+            value={localEmail}
+            onChange={(e) => setLocalEmail(e.target.value)}
             placeholder="email@example.com"
             className="rounded-sm border border-border bg-surface px-2 py-1 text-xs text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand"
           />
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              onClick={commit}
+              className="flex-1 rounded-sm bg-brand px-2 py-1 text-[11px] font-medium text-white transition-colors hover:bg-brand-hover"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={cancel}
+              className="flex-1 rounded-sm border border-border px-2 py-1 text-[11px] font-medium text-ink-muted transition-colors hover:bg-surface-hover"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
     </div>
