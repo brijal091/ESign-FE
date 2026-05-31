@@ -3,8 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useId,
-  useMemo,
   useRef,
   useState,
   type ClipboardEvent,
@@ -16,8 +14,17 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ArrowLeft, ArrowRight, Loader2, Mail } from 'lucide-react'
-import { Button, Label, toast, cn } from '@esign/ui'
+import { ArrowLeft, ArrowRight, Check, ChevronDown, Loader2, Mail } from 'lucide-react'
+import {
+  Button,
+  Label,
+  toast,
+  cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@esign/ui'
 import {
   RegisterOrganizationRequestSchema,
   type RegisterOrganizationRequest,
@@ -464,8 +471,6 @@ function OrgStep({
     } as Partial<OrgValues> as OrgValues,
   })
 
-  const orgSizeId = useId()
-  const roleId = useId()
   const orgSizeError = form.formState.errors.orgSize?.message
   const roleError = form.formState.errors.role?.message
 
@@ -496,18 +501,8 @@ function OrgStep({
     }
   })
 
-  const selectClass = useMemo(
-    () =>
-      cn(
-        'h-11 w-full appearance-none rounded-md border border-border bg-surface px-3 pr-9 text-[14px] text-ink',
-        'outline-none transition-all focus-visible:border-brand focus-visible:shadow-[var(--shadow-focus)]',
-        'bg-[length:14px_14px] bg-[right_12px_center] bg-no-repeat',
-      ),
-    [],
-  )
-  // Chevron-down inline SVG so the native select retains a token-aware caret.
-  const chevronUrl =
-    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a716a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")"
+  const orgSize = form.watch('orgSize')
+  const role = form.watch('role')
 
   return (
     <AuthFormShell
@@ -525,58 +520,27 @@ function OrgStep({
 
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label htmlFor={orgSizeId}>Company size</Label>
-            <div className="relative">
-              <select
-                id={orgSizeId}
-                {...form.register('orgSize')}
-                aria-invalid={!!orgSizeError}
-                defaultValue=""
-                className={cn(
-                  selectClass,
-                  orgSizeError && 'border-danger',
-                )}
-                style={{ backgroundImage: chevronUrl }}
-              >
-                <option value="" disabled>
-                  Select…
-                </option>
-                {ORG_SIZES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {orgSizeError && (
-              <p className="text-xs text-danger-strong">{orgSizeError}</p>
-            )}
+            <Label>Company size</Label>
+            <FormSelect
+              placeholder="Select…"
+              value={orgSize}
+              options={ORG_SIZES as unknown as string[]}
+              error={!!orgSizeError}
+              onChange={(v) => form.setValue('orgSize', v as typeof orgSize, { shouldValidate: true })}
+            />
+            {orgSizeError && <p className="text-xs text-danger-strong">{orgSizeError}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor={roleId}>Your role</Label>
-            <div className="relative">
-              <select
-                id={roleId}
-                {...form.register('role')}
-                aria-invalid={!!roleError}
-                defaultValue=""
-                className={cn(selectClass, roleError && 'border-danger')}
-                style={{ backgroundImage: chevronUrl }}
-              >
-                <option value="" disabled>
-                  Select…
-                </option>
-                {ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {roleError && (
-              <p className="text-xs text-danger-strong">{roleError}</p>
-            )}
+            <Label>Your role</Label>
+            <FormSelect
+              placeholder="Select…"
+              value={role}
+              options={ROLES as unknown as string[]}
+              error={!!roleError}
+              onChange={(v) => form.setValue('role', v as typeof role, { shouldValidate: true })}
+            />
+            {roleError && <p className="text-xs text-danger-strong">{roleError}</p>}
           </div>
         </div>
 
@@ -634,5 +598,57 @@ function OrgStep({
         </button>
       </form>
     </AuthFormShell>
+  )
+}
+
+// ─── FormSelect ───────────────────────────────────────────────────────────────
+// Themed dropdown built on DropdownMenu — replaces native <select> so the
+// option list inherits design tokens instead of OS-native chrome.
+
+function FormSelect({
+  placeholder,
+  value,
+  options,
+  error,
+  onChange,
+}: {
+  placeholder: string
+  value: string | undefined
+  options: string[]
+  error?: boolean
+  onChange: (v: string) => void
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            'flex h-11 w-full items-center justify-between rounded-md border bg-surface px-3 text-[14px] transition-all',
+            'outline-none focus-visible:border-brand focus-visible:shadow-[var(--shadow-focus)]',
+            error ? 'border-danger' : 'border-border',
+            value ? 'text-ink' : 'text-ink-faint',
+          )}
+        >
+          <span className="truncate">{value ?? placeholder}</span>
+          <ChevronDown className="size-4 shrink-0 text-ink-subtle" strokeWidth={1.5} />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="z-50 max-h-60 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto"
+        align="start"
+      >
+        {options.map((opt) => (
+          <DropdownMenuItem
+            key={opt}
+            onClick={() => onChange(opt)}
+            className="flex items-center justify-between"
+          >
+            {opt}
+            {value === opt && <Check className="size-3.5 text-brand" strokeWidth={2} />}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
